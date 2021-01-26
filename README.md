@@ -1,1 +1,1 @@
-# lazy-action-octopus
+# Lazy Octopus GitHub Action
