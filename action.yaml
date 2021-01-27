@@ -26,16 +26,6 @@ inputs:
       Name of the Space in Octopus. Usually, this will be Engineering,
       Mobile, DevOps, etc.
     required: true
-  package:
-    description: >
-      Semantic Version that is used for determining
-      the package and release version
-    required: true
-  package:
-    description: >
-      Semantic Version that is used for determining
-      the package and release version
-    required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
