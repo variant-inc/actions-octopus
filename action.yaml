@@ -1,3 +1,4 @@
+---
 name: Lazy Octopus Action
 description: Create Release in Octopus
 inputs:

@@ -20,7 +20,7 @@ octo push --package="./packages/${env:INPUT_PROJECT_NAME}.${env:INPUT_PACKAGE_VE
 
 $commitMessage = git log -1 --pretty=oneline
 $commitMessage = $commitMessage -replace "${env:GITHUB_SHA} ", ""
-Write-Host "Commit Message: $commitMessage"
+Write-Information "Commit Message: $commitMessage"
 $jsonBody = @{
   BuildEnvironment = "GitHub Actions"
   Branch           = "$($gitVersion.BranchName)"
