@@ -2,30 +2,32 @@
 name: Lazy Octopus Action
 description: Create Release in Octopus
 inputs:
-  default-branch:
+  default_branch:
     description: Default/Main Branch Name
     required: false
     default: master
-  deploy-scripts-path:
+  deploy_scripts_path:
     description: >
       Path to the deploy scripts which is packaged
       and pushed to Octopus. This folder will contains the
       necessary scripts/helm charts/other misc to run the deployments
-    required: true
-    default: deploy
-  octopus-project-name:
+    required: false
+    default: "."
+  project_name:
     description: Name of the project name in Octopus
     required: true
-  package-version:
+  version:
     description: >
       Semantic Version that is used for determining
       the package and release version
     required: true
-  octopus-space-name:
+  space_name:
     description: >
       Name of the Space in Octopus. Usually, this will be Engineering,
       Mobile, DevOps, etc.
     required: true
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
+  using: "composite"
+  steps:
+    - shell: bash
+      run: ${{ github.action_path }}/entrypoint.ps1
