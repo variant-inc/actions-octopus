@@ -1,20 +1,43 @@
 $ErrorActionPreference = "Stop"
+$InformationPreference = "Continue"
+$WarningPreference = "SilentlyContinue"
+
+Trap
+{
+  Write-Error $_ -ErrorAction Continue
+  exit 1
+}
+function CommandAliasFunction
+{
+  Write-Information ""
+  Write-Information "$args"
+  $cmd, $args = $args
+  & "$cmd" $args
+  if ($LASTEXITCODE)
+  {
+    throw "Exception Occured"
+  }
+  Write-Information ""
+}
+
+Set-Alias -Name ce -Value CommandAliasFunction -Scope script
 
 $channelName = "release"
-if (${env:GITVERSION_BRANCHNAME} -ne "${env:INPUT_DEFAULT_BRANCH}")
+if (${env:GITVERSION_BRANCHNAME} -ne "${env:DEFAULT_BRANCH}")
 {
   $channelName = "feature"
 }
 
-$deployScriptsPath = [System.IO.Path]::GetFullPath((Join-Path ${env:GITHUB_WORKSPACE} ${env:INPUT_DEPLOY_SCRIPTS_PATH}))
+$deployScriptsPath = [System.IO.Path]::GetFullPath((Join-Path ${env:GITHUB_WORKSPACE} ${env:DEPLOY_SCRIPTS_PATH}))
 
 mkdir -p ./packages/
-octo pack --id="${env:INPUT_PROJECT_NAME}" `
-  --format="Zip" --version="${env:INPUT_VERSION}" `
-  --basePath="$deployScriptsPath " --outFolder="./packages"
+ce octo pack --id="${env:PROJECT_NAME}" `
+  --format="Zip" --version="${env:VERSION}" `
+  --basePath="$deployScriptsPath" --outFolder="./packages"
 
-octo push --package="./packages/${env:INPUT_PROJECT_NAME}.${env:INPUT_VERSION}.zip" `
-  --space="${env:INPUT_SPACE_NAME}"
+ce octo push --package="./packages/${env:PROJECT_NAME}.${env:VERSION}.zip" `
+  --space="${env:SPACE_NAME}" `
+  --overwrite-mode=OverwriteExisting
 
 $commitMessage = git log -1 --pretty=oneline
 $commitMessage = $commitMessage -replace "${env:GITHUB_SHA} ", ""
@@ -39,15 +62,16 @@ $jsonBody = @{
 New-Item "buildinformation.json" -ItemType File
 Set-Content -Path "buildinformation.json" -Value $jsonBody
 
-octo build-information `
-  --package-id="${env:INPUT_PROJECT_NAME}" `
+ce octo build-information `
+  --package-id="${env:PROJECT_NAME}" `
   --file="buildinformation.json" `
-  --version="${env:INPUT_VERSION}" `
-  --space="${env:INPUT_SPACE_NAME}"
+  --version="${env:VERSION}" `
+  --space="${env:SPACE_NAME}" `
+  --overwrite-mode=OverwriteExisting
 
-octo create-release `
-  --project="${env:INPUT_PROJECT_NAME}" `
-  --packageVersion="${env:INPUT_VERSION}" `
-  --releaseNumber="${env:INPUT_VERSION}" `
-  --space="${env:INPUT_SPACE_NAME}" `
+ce octo create-release `
+  --project="${env:PROJECT_NAME}" `
+  --packageVersion="${env:VERSION}" `
+  --releaseNumber="${env:VERSION}" `
+  --space="${env:SPACE_NAME}" `
   --channel="$channelName"

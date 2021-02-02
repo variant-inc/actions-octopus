@@ -31,3 +31,9 @@ runs:
   steps:
     - shell: pwsh
       run: ${{ github.action_path }}/entrypoint.ps1
+      env:
+        DEFAULT_BRANCH: ${{ inputs.default_branch }}
+        DEPLOY_SCRIPTS_PATH: ${{ inputs.deploy_scripts_path }}
+        PROJECT_NAME: ${{ inputs.project_name }}
+        VERSION: ${{ inputs.version }}
+        SPACE_NAME: ${{ inputs.space_name }}
