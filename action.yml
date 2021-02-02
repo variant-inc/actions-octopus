@@ -29,5 +29,5 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - shell: bash
+    - shell: pwsh
       run: ${{ github.action_path }}/entrypoint.ps1
