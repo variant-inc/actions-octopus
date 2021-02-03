@@ -26,6 +26,11 @@ inputs:
       Name of the Space in Octopus. Usually, this will be Engineering,
       Mobile, DevOps, etc.
     required: true
+  feature_channel_branches:
+    description: >
+      Regex of the branches that has to deployed to dev.
+    required: false
+    default: ".*"
 runs:
   using: "composite"
   steps:
@@ -37,3 +42,4 @@ runs:
         PROJECT_NAME: ${{ inputs.project_name }}
         VERSION: ${{ inputs.version }}
         SPACE_NAME: ${{ inputs.space_name }}
+        FEATURE_CHANNEL_BRANCHES: ${{ inputs.feature_channel_branches }}

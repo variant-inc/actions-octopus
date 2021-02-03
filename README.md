@@ -2,34 +2,22 @@
 
 This action pushes the files to Octopus for deployments
 
-default_branch:
-  description: Default/Main Branch Name
-  required: false
-  default: master
-deploy_scripts_path:
-  description: >
-    Path to the deploy scripts which is packaged
-    and pushed to Octopus. This folder will contains the
-    necessary scripts/helm charts/other misc to run the deployments
-  required: false
-  default: deploy
-project_name:
-  description: Name of the project name in Octopus
-  required: true
-version:
-  description: >
-    Semantic Version that is used for determining
-    the package and release version
-  required: true
-space_name:
-  description: >
-    Name of the Space in Octopus. Usually, this will be Engineering,
-    Mobile, DevOps, etc.
-  required: true
+```yaml
+default_branch: master
+deploy_scripts_path: deploy
+project_name: lazy-api
+version: 0.1.0
+space_name: DevOps
+feature_channel_branches: develop
+```
 
 ## Input variables
 
-| Parameter             | Default | Description                    | Required | Example |
-| --------------------- | ------- | ------------------------------ | -------- | ------- |
-| default_branch        | master  | Directory of the solution file | true     | master  |
-| `dockerfile_dir_path` | `.`     | Directory of the dockerfile    | true     |
+| Parameter                | Default  | Description                                                                                                                                                                  | Required | Example  |
+| ------------------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | -------- |
+| default_branch           | `master` | Directory of the solution file                                                                                                                                               | false    | master   |
+| deploy_scripts_path      | `.`      | Directory of the files/folders that need to be packaged and sent to octopus                                                                                                  | false    | deploy   |
+| project_name             |          | Name of the Octopus project                                                                                                                                                  | true     | lazy-api |
+| version                  |          | Release and Package Version for Octopus Release/Package                                                                                                                      | true     | 0.1.1    |
+| space_name               |          | Name of the space the Octopus project belongs to                                                                                                                             | DevOps   |
+| feature_channel_branches | `.*`     | Which branches should be deployed to feature channel. Refer [](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_regular_expressions) | false    | develop  |
