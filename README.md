@@ -1,4 +1,4 @@
-# Lazy Octopus GitHub Action
+# Octopus GitHub Action
 
 This action pushes the files to Octopus for deployments
 
