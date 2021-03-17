@@ -21,3 +21,18 @@ feature_channel_branches: develop
 | version                  |          | Release and Package Version for Octopus Release/Package                                                                                                                      | true     | 0.1.1    |
 | space_name               |          | Name of the space the Octopus project belongs to                                                                                                                             | DevOps   |
 | feature_channel_branches | `.*`     | Which branches should be deployed to feature channel. Refer <https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_regular_expressions> | false    | develop  |
+
+## Usage
+
+```yaml
+
+    - name: Lazy Action Octopus
+      uses: variant-inc/actions-octopus@v1
+      with:
+        default_branch: ${{ env.MASTER_BRANCH }}
+        deploy_scripts_path: deploy
+        project_name: ${{ env.PROJECT_NAME }}
+        version: ${{ steps.lazy-setup.outputs.image-version }}
+        space_name: ${{ env.OCTOPUS_SPACE_NAME }}
+
+```
