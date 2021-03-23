@@ -13,9 +13,6 @@ inputs:
       necessary scripts/helm charts/other misc to run the deployments
     required: false
     default: "."
-  project_name:
-    description: Name of the project name in Octopus
-    required: true
   version:
     description: >
       Semantic Version that is used for determining
@@ -26,6 +23,11 @@ inputs:
       Name of the Space in Octopus. Usually, this will be Engineering,
       Mobile, DevOps, etc.
     required: true
+    default: "Default"
+  project_name:
+    description: Name of the project name in Octopus
+    required: true
+    default: "default"
   feature_channel_branches:
     description: >
       Regex of the branches that has to deployed to dev.
@@ -34,6 +36,8 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - shell: pwsh
+      run: ${{ github.action_path }}/octopus_deployment.ps1
     - shell: pwsh
       run: ${{ github.action_path }}/entrypoint.ps1
       env:

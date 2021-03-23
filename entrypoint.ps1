@@ -20,6 +20,18 @@ function CommandAliasFunction
   Write-Information ""
 }
 
+$octoYamlPath = [System.IO.Path]::GetFullPath((Join-Path ${env:GITHUB_WORKSPACE} ".octopus/workflow/octopus.yaml"))
+if (Test-Path -Path $octoYamlPath -PathType Leaf)
+{
+  $SPACE_NAME = yq eval .SpaceName $octoYamlPath
+  Write-Output $SPACE_NAME
+  $PROJECT_NAME = yq eval .ProjectName $octoYamlPath
+} else {
+  $SPACE_NAME = $env:SPACE_NAME
+  $PROJECT_NAME = $env:PROJECT_NAME
+  Write-Output $PROJECT_NAME
+}
+
 Set-Alias -Name ce -Value CommandAliasFunction -Scope script
 
 if (${env:GITVERSION_BRANCHNAME} -eq "${env:DEFAULT_BRANCH}")
@@ -36,12 +48,12 @@ elseif (${env:GITVERSION_BRANCHNAME} -match "${env:FEATURE_CHANNEL_BRANCHES}")
 $deployScriptsPath = [System.IO.Path]::GetFullPath((Join-Path ${env:GITHUB_WORKSPACE} ${env:DEPLOY_SCRIPTS_PATH}))
 
 mkdir -p ./packages/
-ce octo pack --id="${env:PROJECT_NAME}" `
+ce octo pack --id="${PROJECT_NAME}" `
   --format="Zip" --version="${env:VERSION}" `
   --basePath="$deployScriptsPath" --outFolder="./packages"
 
-ce octo push --package="./packages/${env:PROJECT_NAME}.${env:VERSION}.zip" `
-  --space="${env:SPACE_NAME}" `
+ce octo push --package="./packages/${PROJECT_NAME}.${env:VERSION}.zip" `
+  --space="${SPACE_NAME}" `
   --overwrite-mode=OverwriteExisting
 
 $commitMessage = git log -1 --pretty=oneline
@@ -68,15 +80,15 @@ New-Item "buildinformation.json" -ItemType File
 Set-Content -Path "buildinformation.json" -Value $jsonBody
 
 ce octo build-information `
-  --package-id="${env:PROJECT_NAME}" `
+  --package-id="${PROJECT_NAME}" `
   --file="buildinformation.json" `
   --version="${env:VERSION}" `
-  --space="${env:SPACE_NAME}" `
+  --space="${SPACE_NAME}" `
   --overwrite-mode=OverwriteExisting
 
 ce octo create-release `
-  --project="${env:PROJECT_NAME}" `
+  --project="${PROJECT_NAME}" `
   --packageVersion="${env:VERSION}" `
   --releaseNumber="${env:VERSION}" `
-  --space="${env:SPACE_NAME}" `
+  --space="${SPACE_NAME}" `
   --channel="$channelName"
