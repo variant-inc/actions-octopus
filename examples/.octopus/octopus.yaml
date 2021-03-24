@@ -1,0 +1,53 @@
+---
+SpaceName: Default
+ProjectName: actions-test
+
+Process:
+  - Name: Debug
+    PackageRequirement: LetOctopusDecide
+    Properties:
+      Octopus.Step.ConditionVariableExpression: "#{AWS_ACCESS_KEY_ID}"
+    Condition: Success
+    StartTrigger: StartAfterPrevious
+    Actions:
+    - Name: Debug
+      ActionType: Octopus.Script
+      Notes:
+      IsDisabled: false
+      CanBeUsedForProjectVersioning: true
+      IsRequired: false
+      WorkerPoolVariable: WORKER_POOL
+      Packages:
+      - Name: actions-test
+      Condition: Success
+      Properties:
+        Octopus.Action.RunOnServer: 'true'
+        Octopus.Action.Script.ScriptSource: Inline
+        Octopus.Action.Script.Syntax: Python
+        Octopus.Action.Script.ScriptBody: print("INCLUDE DEBUG SCRIPTS HERE")
+      Links: {}
+  - Name: TF Apply
+    PackageRequirement: LetOctopusDecide
+    Condition: Always
+    StartTrigger: StartAfterPrevious
+    Actions:
+    - Name: TF Apply
+      ActionType: Octopus.Script
+      Notes:
+      IsDisabled: false
+      CanBeUsedForProjectVersioning: true
+      IsRequired: false
+      WorkerPoolVariable: WORKER_POOL
+      Packages:
+      - Name: actions-test
+      Condition: Success
+      Properties:
+        Octopus.Action.RunOnServer: 'true'
+        Octopus.Action.EnabledFeatures: Octopus.Features.JsonConfigurationVariables,Octopus.Features.SubstituteInFiles
+        Octopus.Action.Script.ScriptSource: Package
+        Octopus.Action.Script.ScriptFileName: deploy.ps1
+        Octopus.Action.Package.PackageId: "#{Octopus.Project.Name}"
+        Octopus.Action.Package.DownloadOnTentacle: 'False'
+        Octopus.Action.Script.ScriptParameters: hello world
+        Octopus.Action.Package.JsonConfigurationVariablesTargets: terraform/environment/octo.tfvars.json
+        Octopus.Action.SubstituteInFiles.TargetFiles: terraform/environment/octo.tfconfig

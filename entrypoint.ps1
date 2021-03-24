@@ -24,12 +24,10 @@ $octoYamlPath = [System.IO.Path]::GetFullPath((Join-Path ${env:GITHUB_WORKSPACE}
 if (Test-Path -Path $octoYamlPath -PathType Leaf)
 {
   $SPACE_NAME = yq eval .SpaceName $octoYamlPath
-  Write-Output $SPACE_NAME
   $PROJECT_NAME = yq eval .ProjectName $octoYamlPath
 } else {
   $SPACE_NAME = $env:SPACE_NAME
   $PROJECT_NAME = $env:PROJECT_NAME
-  Write-Output $PROJECT_NAME
 }
 
 Set-Alias -Name ce -Value CommandAliasFunction -Scope script
