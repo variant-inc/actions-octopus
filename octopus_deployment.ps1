@@ -1,4 +1,7 @@
-$octoYamlPath = [System.IO.Path]::GetFullPath((Join-Path ${env:GITHUB_WORKSPACE} ".octopus/workflow/octopus.yaml"))
+# $octoYamlPath = [System.IO.Path]::GetFullPath((Join-Path ${env:GITHUB_WORKSPACE} ".octopus/workflow/octopus.yaml"))
+$octoYamlPath = ".octopus/workflow/octopus.yaml"
+$env:LAZY_API_URL = "lazy.apps.ops-drivevariant.com"
+$env:LAZY_API_KEY = "1234567890"
 if (Test-Path -Path $octoYamlPath -PathType Leaf)
 {
     $octoDeploymentSteps = yq eval -j $octoYamlPath
@@ -6,5 +9,6 @@ if (Test-Path -Path $octoYamlPath -PathType Leaf)
     $octoProjectEndpoint = "https://$env:LAZY_API_URL/octopus/project"
     $requestHeaders = New-Object System.Collections.Generic.Dictionary"[String,Int]"
     $requestHeaders.Add("x-api-key",$env:LAZY_API_KEY)
-    Invoke-WebRequest -Uri $octoProjectEndpoint -Headers $requestHeaders -Method POST -Body $octoDeploymentSteps
+    $Response = Invoke-WebRequest -Uri $octoProjectEndpoint -Headers $requestHeaders -Method POST -Body $octoDeploymentSteps
+    $Response.RawContent
 }

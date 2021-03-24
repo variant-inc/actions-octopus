@@ -5,8 +5,6 @@ ProjectName: actions-test
 Process:
   - Name: Debug
     PackageRequirement: LetOctopusDecide
-    Properties:
-      Octopus.Step.ConditionVariableExpression: "#{AWS_ACCESS_KEY_ID}"
     Condition: Success
     StartTrigger: StartAfterPrevious
     Actions:
@@ -19,7 +17,6 @@ Process:
       WorkerPoolVariable: WORKER_POOL
       Packages:
       - Name: actions-test
-      Condition: Success
       Properties:
         Octopus.Action.RunOnServer: 'true'
         Octopus.Action.Script.ScriptSource: Inline
@@ -28,12 +25,14 @@ Process:
       Links: {}
   - Name: TF Apply
     PackageRequirement: LetOctopusDecide
+    Properties:
+      Octopus.Step.ConditionVariableExpression: "#{AWS_ACCESS_KEY_ID}"
     Condition: Always
     StartTrigger: StartAfterPrevious
     Actions:
     - Name: TF Apply
       ActionType: Octopus.Script
-      Notes:
+      Notes: 'Always runs'
       IsDisabled: false
       CanBeUsedForProjectVersioning: true
       IsRequired: false
