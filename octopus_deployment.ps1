@@ -1,7 +1,4 @@
-# $octoYamlPath = [System.IO.Path]::GetFullPath((Join-Path ${env:GITHUB_WORKSPACE} ".octopus/workflow/octopus.yaml"))
-$octoYamlPath = ".octopus/workflow/octopus.yaml"
-$env:LAZY_API_URL = "lazy.apps.ops-drivevariant.com"
-$env:LAZY_API_KEY = "1234567890"
+$octoYamlPath = [System.IO.Path]::GetFullPath((Join-Path ${env:GITHUB_WORKSPACE} ".octopus/workflow/octopus.yaml"))
 if (Test-Path -Path $octoYamlPath -PathType Leaf)
 {
     $octoDeploymentSteps = yq eval -j $octoYamlPath
