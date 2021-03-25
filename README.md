@@ -6,12 +6,12 @@
 | ------------------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | -------- |
 | default_branch           | `master` | Directory of the solution file                                                                                                                                               | false    | master   |
 | deploy_scripts_path      | `.`      | Directory of the files/folders that need to be packaged and sent to octopus                                                                                                  | false    | deploy   |
-| project_name**             |          | Name of the Octopus project                                                                                                                                                  | true     | lazy-api |
-| space_name**             |          | Name of the space the Octopus project belongs to                                                                                                                                                  | true     | DevOps |
+| project_name**             |          | Name of the Octopus project                                                                                                                                                  | false     | lazy-api |
+| space_name**             |          | Name of the space the Octopus project belongs to                                                                                                                                                  | false     | DevOps |
 | version                  |          | Release and Package Version for Octopus Release/Package                                                                                                                      | true     | 0.1.1    |
 | feature_channel_branches | `.*`     | Which branches should be deployed to feature channel. Refer <https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_regular_expressions> | false    | develop  |
 
-** Input not required if .octopus/workflow/octopus.yaml exists. SpaceName and ProjectName should be specified. See [Usage with octopus.yaml](#usage-with-octopus.yaml) section.
+** Input required if .octopus/workflow/octopus.yaml does not exists. See [Usage with octopus.yaml](#usage-with-octopus.yaml) section.
 ___
 
 ## Usage with octopus.yaml
@@ -27,12 +27,12 @@ Everything in the Process object is taken from the octopus api.
 # Currently the availble ones are
 # Required
 # `Engineering` `Mobile` `DataScience` `DriverProduct`
-SpaceName: Default
+SpaceName: DevOps
 
 # Name of the octopus project.
 # If project isn't found, then one will be created in the provided space
 # Required
-ProjectName: actions-test
+ProjectName: iaac
 
 Process:
     # Dummy name which will have no effect on the UI.
@@ -60,6 +60,7 @@ Process:
     # Even though it is an array, use only 1 action
     # Multiple actions are for deployment targets which we aren't using
     Actions:
+
         # Name of the Depployment Process
         # This is the name that will be visible in the UI
         # Required
@@ -76,7 +77,6 @@ Process:
         # If list is empty, then process will be run in all environments
         # or determined by ExcludedEnvironments
         Environments: []
-
         # List of Environments where the process is excluded
         # If list is empty, then process will be run in all environments
         # or determined by Environments
@@ -87,7 +87,7 @@ Process:
         Channels: []
 
         Properties:
-          # Use Package if you need to run a script in a deploy package.
+          # Use Package if you need to run a script included in a deploy package.
           # Default: Package
           Octopus.Action.Script.ScriptSource: Package
           
@@ -119,7 +119,7 @@ Process:
           # Provide only 1 Name. This name will be the folder where the package for the release will be extracted
           Packages:
             - Name: deploy
-          # Required when Parameters when `Octopus.Action.Script.ScriptSource` is `Package`
+          # Used when Parameters when `Octopus.Action.Script.ScriptSource` is `Package`
 
           # Paramters to be passed to the script above
           Octopus.Action.Script.ScriptParameters: "hello world"
@@ -153,6 +153,21 @@ Process:
 ```
 
 For more [examples](file:/../examples/.octopus), see examples/.octopus/workflow directory
+
+#### Octopus.yaml Schema
+
+- SpaceName (String) The name of the Space associated with the Project.
+- ProjectName (String) The name of the Project associated with this deployment process.
+- Process (List) See below for nested schema for Process. Each process is a deployment step.
+
+Nested Schema for Process
+
+- Name (String) Name of the Process
+- PackageRequirement (String) Whether to run this step before or after package acquisition (if possible). (LetOctopusDecide, AfterPackageAcquisition, BeforePackageAcquisition)
+- Condition (String) When to run the step, (Success, Always, Variable, Failure)
+- StartTrigger (String) Whether to run this step after the previous step (StartAfterPrevious) or at the same time as the previous step (StartWithPrevious)
+- Properties (Map<String>)
+- Actions (List) See below for nested schema for Actions
 
 ### <github_workflow>.yaml
 

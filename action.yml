@@ -22,11 +22,11 @@ inputs:
     description: >
       Name of the Space in Octopus. Usually, this will be Engineering,
       Mobile, DevOps, etc.
-    required: true
+    required: false
     default: "Default"
   project_name:
     description: Name of the project name in Octopus
-    required: true
+    required: false
     default: "default"
   feature_channel_branches:
     description: >

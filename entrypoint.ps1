@@ -30,6 +30,16 @@ if (Test-Path -Path $octoYamlPath -PathType Leaf)
   $PROJECT_NAME = $env:PROJECT_NAME
 }
 
+if (($SPACE_NAME -eq $null) -or ($SPACE_NAME -eq ""))
+{
+  throw "Space Name not provided"
+}
+
+if (($PROJECT_NAME -eq $null) -or ($PROJECT_NAME -eq ""))
+{
+  throw "Project Name not provided"
+}
+
 Set-Alias -Name ce -Value CommandAliasFunction -Scope script
 
 if (${env:GITVERSION_BRANCHNAME} -eq "${env:DEFAULT_BRANCH}")
@@ -84,7 +94,7 @@ ce octo build-information `
   --space="${SPACE_NAME}" `
   --overwrite-mode=OverwriteExisting
 
-ce octo create-release `
+octo create-release `
   --project="${PROJECT_NAME}" `
   --packageVersion="${env:VERSION}" `
   --releaseNumber="${env:VERSION}" `
