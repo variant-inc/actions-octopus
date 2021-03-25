@@ -166,8 +166,42 @@ Nested Schema for Process
 - PackageRequirement (String) Whether to run this step before or after package acquisition (if possible). (LetOctopusDecide, AfterPackageAcquisition, BeforePackageAcquisition)
 - Condition (String) When to run the step, (Success, Always, Variable, Failure)
 - StartTrigger (String) Whether to run this step after the previous step (StartAfterPrevious) or at the same time as the previous step (StartWithPrevious)
-- Properties (Map<String>)
+- Properties (Map of String) Extra options
+  
+  Example keys
+  - Octopus.Step.ConditionVariableExpression
 - Actions (List) See below for nested schema for Actions
+
+Nested Schema for Actions
+
+- Name (String) Name of the Action, should be the same as Process Name
+- ActionType (String) The type of action. (Octopus.Script, Octopus.TentaclePackage...)
+- Notes (String) Extra info on you deployment step
+- IsDisabled (Boolean) Indicates the disabled status of this deployment action.
+- IsRequired (Boolean) Indicates the required status of this deployment action.
+- CanBeUsedForProjectVersioning (Boolean)
+- Channels (List of String) The channels associated with this deployment action
+- Condition (String) The condition associated with this deployment action.
+- Environments (List of String) The environments within which this deployment action will run.
+- ExcludedEnvironments (List of String) The environments that this step will be skipped in
+- Packages (List) The package assocated with this action. (see below for nested schema)
+- Properties (Map of String) The properties associated with this deployment action
+
+  Example keys
+  - Octopus.Action.RunOnServer (Boolean)
+  - Octopus.Action.EnabledFeatures (String)
+    - ex. "Octopus.Features.JsonConfigurationVariables,Octopus.Features.SubstituteInFiles"
+  - Octopus.Action.Script.ScriptSource (String)
+  - Octopus.Action.Script.ScriptFileName (String)
+  - Octopus.Action.Package.PackageId (String)
+  - Octopus.Action.Package.DownloadOnTentacle (Boolean)
+  - Octopus.Action.Script.ScriptParameters (String)
+  - Octopus.Action.Package.JsonConfigurationVariablesTargets (String) PAth of files to substitute variables
+  - Octopus.Action.SubstituteInFiles.TargetFiles (String) Path of files to substitute
+
+Nested Schema for Packages
+
+- Name (String) Name of the Package to include in this step
 
 ### <github_workflow>.yaml
 
