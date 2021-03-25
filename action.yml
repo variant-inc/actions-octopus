@@ -23,11 +23,9 @@ inputs:
       Name of the Space in Octopus. Usually, this will be Engineering,
       Mobile, DevOps, etc.
     required: false
-    default: "Default"
   project_name:
     description: Name of the project name in Octopus
     required: false
-    default: "default"
   feature_channel_branches:
     description: >
       Regex of the branches that has to deployed to dev.
