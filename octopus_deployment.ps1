@@ -8,4 +8,8 @@ if (Test-Path -Path $octoYamlPath -PathType Leaf)
     $requestHeaders.Add("x-api-key",$env:LAZY_API_KEY)
     $Response = Invoke-WebRequest -Uri $octoProjectEndpoint -Headers $requestHeaders -Method POST -Body $octoDeploymentSteps
     $Response.RawContent
+    if($Response.StatusCode -ne 200)
+    {
+        throw $Response
+    }
 }

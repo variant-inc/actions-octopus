@@ -222,7 +222,7 @@ ___
 
 ## Usage Without Ocotpus.yaml
 
-To run without an octopus.yaml file, include space_name and project_name inputs within your github workflow.
+To run without using Octopus configuration as code, include space_name and project_name inputs within your github workflow.
 
 ```yaml
 

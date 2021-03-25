@@ -15,8 +15,6 @@ Process:
       CanBeUsedForProjectVersioning: true
       IsRequired: false
       WorkerPoolVariable: WORKER_POOL
-      Packages:
-      - Name: actions-test
       Properties:
         Octopus.Action.RunOnServer: 'true'
         Octopus.Action.Script.ScriptSource: Inline
@@ -37,8 +35,6 @@ Process:
       CanBeUsedForProjectVersioning: true
       IsRequired: false
       WorkerPoolVariable: WORKER_POOL
-      Packages:
-      - Name: actions-test
       Condition: Success
       Properties:
         Octopus.Action.RunOnServer: 'true'
