@@ -41,7 +41,6 @@ Process:
         Octopus.Action.EnabledFeatures: Octopus.Features.JsonConfigurationVariables,Octopus.Features.SubstituteInFiles
         Octopus.Action.Script.ScriptSource: Package
         Octopus.Action.Script.ScriptFileName: deploy.ps1
-        Octopus.Action.Package.PackageId: "#{Octopus.Project.Name}"
         Octopus.Action.Package.DownloadOnTentacle: 'False'
         Octopus.Action.Script.ScriptParameters: hello world
         Octopus.Action.Package.JsonConfigurationVariablesTargets: terraform/environment/octo.tfvars.json

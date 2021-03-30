@@ -23,8 +23,8 @@ function CommandAliasFunction
 $octoYamlPath = [System.IO.Path]::GetFullPath((Join-Path ${env:GITHUB_WORKSPACE} ".octopus/workflow/octopus.yaml"))
 if (Test-Path -Path $octoYamlPath -PathType Leaf)
 {
-  $SPACE_NAME = yq eval .SpaceName $octoYamlPath
-  $PROJECT_NAME = yq eval .ProjectName $octoYamlPath
+  $SPACE_NAME = ce yq eval .SpaceName $octoYamlPath
+  $PROJECT_NAME = ce yq eval .ProjectName $octoYamlPath
 } else {
   $SPACE_NAME = $env:SPACE_NAME
   $PROJECT_NAME = $env:PROJECT_NAME
