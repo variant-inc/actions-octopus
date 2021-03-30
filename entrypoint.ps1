@@ -30,12 +30,12 @@ if (Test-Path -Path $octoYamlPath -PathType Leaf)
   $PROJECT_NAME = $env:PROJECT_NAME
 }
 
-if (($SPACE_NAME -eq $null) -or ($SPACE_NAME -eq ""))
+if (($null -eq $SPACE_NAME) -or ("" -eq $SPACE_NAME))
 {
   throw "Space Name not provided"
 }
 
-if (($PROJECT_NAME -eq $null) -or ($PROJECT_NAME -eq ""))
+if (($null -eq $PROJECT_NAME) -or ("" -eq $PROJECT_NAME))
 {
   throw "Project Name not provided"
 }
