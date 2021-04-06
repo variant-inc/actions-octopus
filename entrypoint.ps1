@@ -20,6 +20,8 @@ function CommandAliasFunction
   Write-Information ""
 }
 
+Set-Alias -Name ce -Value CommandAliasFunction -Scope script
+
 $octoYamlPath = [System.IO.Path]::GetFullPath((Join-Path ${env:GITHUB_WORKSPACE} ".octopus/workflow/octopus.yaml"))
 if (Test-Path -Path $octoYamlPath -PathType Leaf)
 {
@@ -39,8 +41,6 @@ if (($null -eq $PROJECT_NAME) -or ("" -eq $PROJECT_NAME))
 {
   throw "Project Name not provided"
 }
-
-Set-Alias -Name ce -Value CommandAliasFunction -Scope script
 
 if (${env:GITVERSION_BRANCHNAME} -eq "${env:DEFAULT_BRANCH}")
 {
