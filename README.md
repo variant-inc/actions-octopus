@@ -210,7 +210,7 @@ Include anction-octopus input variables in your actions yamls file.
 ```yaml
 
     - name: Lazy Action Octopus
-      uses: variant-inc/actions-octopus@v2
+      uses: variant-inc/actions-octopus@v1
       with:
         default_branch: ${{ env.MASTER_BRANCH }}
         deploy_scripts_path: deploy
