@@ -214,7 +214,7 @@ Include anction-octopus input variables in your actions yamls file.
       with:
         default_branch: ${{ env.MASTER_BRANCH }}
         deploy_scripts_path: deploy
-        version: ${{ steps.lazy-setup.outputs.image-version }}
+        version: ${{ steps.lazy-setup.outputs.image_version }}
 
 ```
 
@@ -232,7 +232,7 @@ To run without using Octopus configuration as code, include space_name and proje
         default_branch: ${{ env.MASTER_BRANCH }}
         deploy_scripts_path: deploy
         project_name: ${{ env.PROJECT_NAME }}
-        version: ${{ steps.lazy-setup.outputs.image-version }}
+        version: ${{ steps.lazy-setup.outputs.image_version }}
         space_name: ${{ env.OCTOPUS_SPACE_NAME }}
 
 ```
