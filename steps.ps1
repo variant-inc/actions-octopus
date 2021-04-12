@@ -49,7 +49,7 @@ if (Test-Path -Path $octoYamlPath -PathType Leaf)
   {
     throw "Project Name not provided"
   }
-  
+
   $requestHeaders = New-Object System.Collections.Generic.Dictionary"[String,Object]"
   $requestHeaders.Add("x-api-key",$env:LAZY_API_KEY)
 
