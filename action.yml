@@ -35,9 +35,16 @@ runs:
   using: "composite"
   steps:
     - shell: pwsh
-      run: ${{ github.action_path }}/steps.ps1
-    - shell: pwsh
-      run: ${{ github.action_path }}/release.ps1
+      run: |
+        $ErrorActionPreference = "Stop"
+        $InformationPreference = "Continue"
+        $WarningPreference = "SilentlyContinue"
+        
+        Write-Host "${{ github.action_path }}"
+        ${{ github.action_path }}/steps.ps1
+        Write-Host "Octopus Project Configuration Complete"
+        ${{ github.action_path }}/release.ps1
+        Write-Host "Octopus Release Complete"
       env:
         DEFAULT_BRANCH: ${{ inputs.default_branch }}
         DEPLOY_SCRIPTS_PATH: ${{ inputs.deploy_scripts_path }}
