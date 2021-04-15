@@ -62,7 +62,7 @@ if (Test-Path -Path $octoYamlPath -PathType Leaf)
 
   Write-Output "Octopus Project Request Body"
   Write-Output $Body
-  
+
   $octoProjectEndpoint = "https://$env:LAZY_API_URL/octopus/project"
   Write-Output "Lazy API URL $octoProjectEndpoint"
   $Response = Invoke-WebRequest -Uri $octoProjectEndpoint `
