@@ -25,9 +25,11 @@ Set-Alias -Name ce -Value CommandAliasFunction -Scope script
 $octoYamlPath = [System.IO.Path]::GetFullPath((Join-Path ${env:GITHUB_WORKSPACE} ".octopus/workflow/octopus.yaml"))
 if (Test-Path -Path $octoYamlPath -PathType Leaf)
 {
+  Write-Output "Gathering Space/Project from octopus.yaml"
   $SPACE_NAME = ce yq eval .SpaceName $octoYamlPath
   $PROJECT_NAME = ce yq eval .ProjectName $octoYamlPath
 } else {
+  Write-Output "Gathering Space/Project from workflow input"
   $SPACE_NAME = $env:SPACE_NAME
   $PROJECT_NAME = $env:PROJECT_NAME
 }
@@ -56,10 +58,13 @@ elseif (${env:GITVERSION_BRANCHNAME} -match "${env:FEATURE_CHANNEL_BRANCHES}")
 $deployScriptsPath = [System.IO.Path]::GetFullPath((Join-Path ${env:GITHUB_WORKSPACE} ${env:DEPLOY_SCRIPTS_PATH}))
 
 mkdir -p ./packages/
+
+Write-Output "Packing Octopus Package"
 ce octo pack --id="${PROJECT_NAME}" `
   --format="Zip" --version="${env:VERSION}" `
   --basePath="$deployScriptsPath" --outFolder="./packages"
 
+Write-Output "Pushing Octopus Package"
 ce octo push --package="./packages/${PROJECT_NAME}.${env:VERSION}.zip" `
   --space="${SPACE_NAME}" `
   --overwrite-mode=OverwriteExisting
@@ -67,6 +72,7 @@ ce octo push --package="./packages/${PROJECT_NAME}.${env:VERSION}.zip" `
 $commitMessage = git log -1 --pretty=oneline
 $commitMessage = $commitMessage -replace "${env:GITHUB_SHA} ", ""
 Write-Information "Commit Message: $commitMessage"
+Write-Output "Writing Build Information"
 $jsonBody = @{
   BuildEnvironment = "GitHub Actions"
   Branch           = "${env:GITVERSION_BRANCHNAME}"
@@ -87,6 +93,7 @@ $jsonBody = @{
 New-Item "buildinformation.json" -ItemType File
 Set-Content -Path "buildinformation.json" -Value $jsonBody
 
+Write-Output "Pushing Build Information"
 ce octo build-information `
   --package-id="${PROJECT_NAME}" `
   --file="buildinformation.json" `
@@ -94,6 +101,7 @@ ce octo build-information `
   --space="${SPACE_NAME}" `
   --overwrite-mode=OverwriteExisting
 
+Write-Output "Creating Octopus Release"
 octo create-release `
   --project="${PROJECT_NAME}" `
   --packageVersion="${env:VERSION}" `
