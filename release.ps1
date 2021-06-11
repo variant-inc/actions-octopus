@@ -1,34 +1,11 @@
-$ErrorActionPreference = "Stop"
-$InformationPreference = "Continue"
-$WarningPreference = "SilentlyContinue"
-
-Trap
-{
-  Write-Error $_ -ErrorAction Continue
-  exit 1
-}
-function CommandAliasFunction
-{
-  Write-Information ""
-  Write-Information "$args"
-  $cmd, $args = $args
-  & "$cmd" $args
-  if ($LASTEXITCODE)
-  {
-    throw "Exception Occured"
-  }
-  Write-Information ""
-}
-
-Set-Alias -Name ce -Value CommandAliasFunction -Scope script
-
-$octoYamlPath = [System.IO.Path]::GetFullPath((Join-Path ${env:GITHUB_WORKSPACE} ".octopus/workflow/octopus.yaml"))
 if (Test-Path -Path $octoYamlPath -PathType Leaf)
 {
   Write-Output "Gathering Space/Project from octopus.yaml"
   $SPACE_NAME = ce yq eval .SpaceName $octoYamlPath
   $PROJECT_NAME = ce yq eval .ProjectName $octoYamlPath
-} else {
+}
+else
+{
   Write-Output "Gathering Space/Project from workflow input"
   $SPACE_NAME = $env:SPACE_NAME
   $PROJECT_NAME = $env:PROJECT_NAME
@@ -51,7 +28,9 @@ if (${env:GITVERSION_BRANCHNAME} -eq "${env:DEFAULT_BRANCH}")
 elseif (${env:GITVERSION_BRANCHNAME} -match "${env:FEATURE_CHANNEL_BRANCHES}")
 {
   $channelName = "feature"
-} else {
+}
+else
+{
   exit 0;
 }
 
@@ -102,9 +81,10 @@ ce octo build-information `
   --overwrite-mode=OverwriteExisting
 
 Write-Output "Creating Octopus Release"
-octo create-release `
+ce octo create-release `
   --project="${PROJECT_NAME}" `
   --packageVersion="${env:VERSION}" `
   --releaseNumber="${env:VERSION}" `
   --space="${SPACE_NAME}" `
-  --channel="$channelName"
+  --channel="$channelName" `
+  --ignoreExisting
