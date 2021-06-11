@@ -24,11 +24,12 @@ function CommandAliasFunction
 
 Set-Alias -Name ce -Value CommandAliasFunction -Scope script
 
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUserDeclaredVarsMoreThanAssignments', '', Scope = 'Function')]
 $octoYamlPath = [System.IO.Path]::GetFullPath((Join-Path ${env:GITHUB_WORKSPACE} ".octopus/workflow/octopus.yaml"))
 
-Write-Host "$env:ACTION_PATH"
+Write-Output "$env:ACTION_PATH"
 & $env:ACTION_PATH/steps.ps1
-Write-Host "Octopus Project Configuration Complete"
+Write-Output "Octopus Project Configuration Complete"
 
 & $env:ACTION_PATH/release.ps1
-Write-Host "Octopus Release Complete"
+Write-Output "Octopus Release Complete"
