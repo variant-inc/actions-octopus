@@ -81,9 +81,10 @@ ce octo build-information `
   --overwrite-mode=OverwriteExisting
 
 Write-Output "Creating Octopus Release"
-octo create-release `
+ce octo create-release `
   --project="${PROJECT_NAME}" `
   --packageVersion="${env:VERSION}" `
   --releaseNumber="${env:VERSION}" `
   --space="${SPACE_NAME}" `
-  --channel="$channelName"
+  --channel="$channelName" `
+  --ignoreExisting
