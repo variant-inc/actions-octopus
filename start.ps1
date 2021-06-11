@@ -4,8 +4,10 @@ $WarningPreference = "SilentlyContinue"
 
 Trap
 {
-  Write-Error $($_ | Out-String)
-  # exit 1
+  Write-Error $_.InvocationInfo.ScriptName -ErrorAction Continue
+  $line = "$($_.InvocationInfo.ScriptLineNumber): $($_.InvocationInfo.Line)"
+  Write-Error $line -ErrorAction Continue
+  Write-Error $_
 }
 function CommandAliasFunction
 {

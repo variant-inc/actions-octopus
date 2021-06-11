@@ -6,17 +6,15 @@ if (Test-Path -Path $octoYamlPath -PathType Leaf)
   Write-Output $octoDeploymentSteps
 
   $octoProjectEndpoint = "https://$env:LAZY_API_URL/octopus/project"
-  $requestHeaders = New-Object System.Collections.Generic.Dictionary"[String,Object]"
-  $requestHeaders.Add("x-api-key", $env:LAZY_API_KEY)
+  $headers = @{
+    'x-api-key'    = $env:LAZY_API_KEY
+    'Content-Type' = 'application/json'
+  }
 
   Write-Output "Lazy API URL $octoProjectEndpoint"
-  $Response = Invoke-WebRequest -Uri $octoProjectEndpoint -Headers $requestHeaders -Method POST -Body $octoDeploymentSteps
+  $Response = Invoke-RestMethod -Uri $octoProjectEndpoint -Headers $headers -Method POST -Body $octoDeploymentSteps
 
-  Write-Output $Response.RawContent
-  if ($Response.StatusCode -ne 200)
-  {
-    throw $Response
-  }
+  $Response | ConvertTo-Json
 }
 else
 {
