@@ -12,7 +12,8 @@ if (Test-Path -Path $octoYamlPath -PathType Leaf)
   }
 
   Write-Output "Lazy API URL $octoProjectEndpoint"
-  $Response = Invoke-RestMethod -Uri $octoProjectEndpoint -Headers $headers -Method POST -Body $octoDeploymentSteps
+  $Response = Invoke-RestMethod -Uri $octoProjectEndpoint `
+    -Headers $headers -Method POST -Body $octoDeploymentSteps
 
   $Response | ConvertTo-Json
 }
@@ -33,8 +34,10 @@ else
     throw "Project Name not provided"
   }
 
-  $requestHeaders = New-Object System.Collections.Generic.Dictionary"[String,Object]"
-  $requestHeaders.Add("x-api-key", $env:LAZY_API_KEY)
+  $headers = @{
+    'x-api-key'    = $env:LAZY_API_KEY
+    'Content-Type' = 'application/json'
+  }
 
   $Body = `
   @{"SpaceName"   = "$SPACE_NAME";
@@ -45,14 +48,11 @@ else
   Write-Output $Body
 
   $octoProjectEndpoint = "https://$env:LAZY_API_URL/octopus/project"
-  Write-Output "Lazy API URL $octoProjectEndpoint"
-  $Response = Invoke-WebRequest -Uri $octoProjectEndpoint `
-    -Headers $requestHeaders `
-    -Method POST -Body ($Body | ConvertTo-Json)
 
-  Write-Output $Response.RawContent
-  if ($Response.StatusCode -ne 200)
-  {
-    throw $Response
-  }
+  Write-Output "Lazy API URL $octoProjectEndpoint"
+
+  $Response = Invoke-RestMethod -Uri $octoProjectEndpoint `
+    -Headers $headers -Method POST -Body ($Body | ConvertTo-Json)
+
+  $Response | ConvertTo-Json
 }
