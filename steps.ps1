@@ -5,7 +5,7 @@ if (Test-Path -Path $octoYamlPath -PathType Leaf)
 
   Write-Output $octoDeploymentSteps
 
-  $octoProjectEndpoint = "https://$env:LAZY_API_URL/octopus/project"
+  $octoProjectEndpoint = "https://$env:LAZY_API_URL/octopus/project?user=$env:GITHUB_ACTOR"
   $headers = @{
     'x-api-key'    = $env:LAZY_API_KEY
     'Content-Type' = 'application/json'
@@ -47,7 +47,7 @@ else
   Write-Output "Octopus Project Request Body"
   Write-Output $Body
 
-  $octoProjectEndpoint = "https://$env:LAZY_API_URL/octopus/project"
+  $octoProjectEndpoint = "https://$env:LAZY_API_URL/octopus/project?user=$env:GITHUB_ACTOR"
 
   Write-Output "Lazy API URL $octoProjectEndpoint"
 
