@@ -51,4 +51,4 @@ runs:
         SPACE_NAME: ${{ inputs.space_name }}
         FEATURE_CHANNEL_BRANCHES: ${{ inputs.feature_channel_branches }}
         ACTION_PATH: ${{ github.action_path }}
-        CHARTS_DIR_PATH: ${{ github.charts_dir_path }}
+        CHARTS_DIR_PATH: ${{ inputs.charts_dir_path }}
