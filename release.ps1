@@ -35,17 +35,6 @@ else
 }
 
 $deployScriptsPath = [System.IO.Path]::GetFullPath((Join-Path ${env:GITHUB_WORKSPACE} ${env:DEPLOY_SCRIPTS_PATH}))
-Write-Output "$deployScriptsPath"
-$chartsScriptsPath = [System.IO.Path]::GetFullPath((Join-Path $deployScriptsPath ${env:CHARTS_DIR_PATH}))
-Write-Output "$chartsScriptsPath"
-$repoName =  basename $(git remote get-url origin) .git
-Write-Output "$repoName"
-
-
-Write-Output "Copy action map to template directory"
-Write-Output "Destination Path $chartsScriptsPath/$repoName/templates"
-Get-Location
-Copy-Item octopus_configmap.yaml -Destination $chartsScriptsPath/$repoName/templates
 
 mkdir -p ./packages/
 
