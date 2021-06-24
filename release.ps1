@@ -42,7 +42,7 @@ Write-Output "$repoName"
 
 
 Write-Output "Copy action map to template directory"
-Copy-Item octopus_ configmap.yaml -Destination $chartsScriptsPath/$repoName/templates
+Copy-Item octopus_configmap.yaml -Destination $chartsScriptsPath/$repoName/templates
 
 mkdir -p ./packages/
 
