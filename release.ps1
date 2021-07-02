@@ -69,7 +69,7 @@ $jsonBody = @{
   )
 } | ConvertTo-Json -Depth 10 -Compress
 
-New-Item "buildinformation.json" -ItemType File
+New-Item "buildinformation.json" -ItemType File -Force
 Set-Content -Path "buildinformation.json" -Value $jsonBody
 
 Write-Output "Pushing Build Information"
