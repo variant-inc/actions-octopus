@@ -10,6 +10,7 @@
 | space_name**             |          | Name of the space the Octopus project belongs to                                                                                                                                                  | false     | DevOps |
 | version                  |          | Release and Package Version for Octopus Release/Package                                                                                                                      | true     | 0.1.1    |
 | feature_channel_branches | `.*`     | Which branches should be deployed to feature channel. Refer <https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_regular_expressions> | false    | develop  |
+| charts_dir_path            |          | Path to the charts directory inside deploy directory                                                                                                                                                  | false     | charts|
 
 ** Input required if .octopus/workflow/octopus.yaml does not exists. See [Usage with octopus.yaml](#usage-with-octopus.yaml) section.
 ___
@@ -205,7 +206,7 @@ Nested Schema for Packages
 
 ### <github_workflow>.yaml
 
-Include anction-octopus input variables in your actions yamls file.
+Include action-octopus input variables in your actions yamls file.
 
 ```yaml
 
@@ -215,7 +216,7 @@ Include anction-octopus input variables in your actions yamls file.
         default_branch: ${{ env.MASTER_BRANCH }}
         deploy_scripts_path: deploy
         version: ${{ steps.lazy-setup.outputs.image_version }}
-
+        charts_dir_path: charts
 ```
 
 ___
@@ -234,5 +235,5 @@ To run without using Octopus configuration as code, include space_name and proje
         project_name: ${{ env.PROJECT_NAME }}
         version: ${{ steps.lazy-setup.outputs.image_version }}
         space_name: ${{ env.OCTOPUS_SPACE_NAME }}
-
+        charts_dir_path: charts
 ```
