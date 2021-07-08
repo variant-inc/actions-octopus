@@ -10,7 +10,7 @@
 | space_name**             |          | Name of the space the Octopus project belongs to                                                                                                                                                  | false     | DevOps |
 | version                  |          | Release and Package Version for Octopus Release/Package                                                                                                                      | true     | 0.1.1    |
 | feature_channel_branches | `.*`     | Which branches should be deployed to feature channel. Refer <https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_regular_expressions> | false    | develop  |
-| charts_dir_path            |          | Path to the charts directory inside deploy directory                                                                                                                                                  | false     | charts|
+| charts_dir_path          | `charts` | Path to the charts directory inside deploy directory                                                                                                                                                  | false     | charts|
 
 ** Input required if .octopus/workflow/octopus.yaml does not exists. See [Usage with octopus.yaml](#usage-with-octopus.yaml) section.
 ___
