@@ -33,7 +33,7 @@ inputs:
     default: ".*"
   charts_dir_path:
     description: >
-      Path to the charts directory inside deploy directory, which is packaged
+      Path to the charts directory from root dir, which is packaged
       and pushed to Octopus. This folder will contains the
       necessary scripts/helm charts/other misc to run the deployments
     required: false

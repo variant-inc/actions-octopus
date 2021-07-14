@@ -2,15 +2,15 @@
 
 ## Input variables
 
-| Parameter                | Default  | Description                                                                                                                                                                  | Required | Example  |
-| ------------------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | -------- |
-| default_branch           | `master` | Directory of the solution file                                                                                                                                               | false    | master   |
-| deploy_scripts_path      | `.`      | Directory of the files/folders that need to be packaged and sent to octopus                                                                                                  | false    | deploy   |
-| project_name**             |          | Name of the Octopus project                                                                                                                                                  | false     | lazy-api |
-| space_name**             |          | Name of the space the Octopus project belongs to                                                                                                                                                  | false     | DevOps |
-| version                  |          | Release and Package Version for Octopus Release/Package                                                                                                                      | true     | 0.1.1    |
+| Parameter                | Default  | Description                                                                                                                                                                | Required | Example  |
+| ------------------------ | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | -------- |
+| default_branch           | `master` | Directory of the solution file                                                                                                                                             | false    | master   |
+| deploy_scripts_path      | `.`      | Directory of the files/folders that need to be packaged and sent to octopus                                                                                                | false    | deploy   |
+| project_name**           |          | Name of the Octopus project                                                                                                                                                | false    | lazy-api |
+| space_name**             |          | Name of the space the Octopus project belongs to                                                                                                                           | false    | DevOps   |
+| version                  |          | Release and Package Version for Octopus Release/Package                                                                                                                    | true     | 0.1.1    |
 | feature_channel_branches | `.*`     | Which branches should be deployed to feature channel. Refer <https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_regular_expressions> | false    | develop  |
-| charts_dir_path          | `charts` | Path to the charts directory inside deploy directory                                                                                                                                                  | false     | charts|
+| charts_dir_path          | `charts` | Path to the charts directory inside deploy directory                                                                                                                       | false    | charts   |
 
 ** Input required if .octopus/workflow/octopus.yaml does not exists. See [Usage with octopus.yaml](#usage-with-octopus.yaml) section.
 ___
@@ -91,7 +91,7 @@ Process:
           # Use Package if you need to run a script included in a deploy package.
           # Default: Package
           Octopus.Action.Script.ScriptSource: Package
-          
+
           # Name of the script file relative to the deployment folder root
           # If structure of the repository is similar to below
           #     root
@@ -140,7 +140,7 @@ Process:
           # Use below if the script in your deployment is Inline
           # Inline Script Source needs a Script Body where you'll enter your script
           Octopus.Action.Script.ScriptSource: Inline
-          
+
           # The syntax of the script that you are trying to execute
           # Can be `Powershell` `Bash` `CSharp` `FSharp` `Python`
           # Default: `Bash`
@@ -168,7 +168,7 @@ Nested Schema for Process
 - Condition (String) When to run the step, (Success, Always, Variable, Failure)
 - StartTrigger (String) Whether to run this step after the previous step (StartAfterPrevious) or at the same time as the previous step (StartWithPrevious)
 - Properties (Map of String) Extra options
-  
+
   Example keys
   - Octopus.Step.ConditionVariableExpression
 - Actions (List) See below for nested schema for Actions
@@ -226,14 +226,13 @@ ___
 To run without using Octopus configuration as code, include space_name and project_name inputs within your github workflow.
 
 ```yaml
-
-    - name: Lazy Action Octopus
-      uses: variant-inc/actions-octopus@v1
-      with:
-        default_branch: ${{ env.MASTER_BRANCH }}
-        deploy_scripts_path: deploy
-        project_name: ${{ env.PROJECT_NAME }}
-        version: ${{ steps.lazy-setup.outputs.image_version }}
-        space_name: ${{ env.OCTOPUS_SPACE_NAME }}
-        charts_dir_path: charts
+- name: Lazy Action Octopus
+  uses: variant-inc/actions-octopus@v1
+  with:
+    default_branch: ${{ env.MASTER_BRANCH }}
+    deploy_scripts_path: deploy
+    project_name: ${{ env.PROJECT_NAME }}
+    version: ${{ steps.lazy-setup.outputs.image_version }}
+    space_name: ${{ env.OCTOPUS_SPACE_NAME }}
+    charts_dir_path: helm/Variant.Api
 ```
