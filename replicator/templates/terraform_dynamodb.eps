@@ -1,4 +1,4 @@
-resource "aws_dynamodb_table_item" "example" {
+resource "aws_dynamodb_table_item" "iaac_replicator" {
   table_name = "replicator_octo_projects"
   hash_key   = "Space"
   range_key  = "Project"
@@ -24,7 +24,7 @@ resource "aws_dynamodb_table_item" "example" {
     "S": "<%= $env:IMAGE_NAME %>"
   },
   "IsInfrastructure": {
-    "BOOL": tobool("<%= $env:IS_INFRASTRUCTURE %>")
+    "S": "<%= $env:IS_INFRASTRUCTURE %>"
   }
 }
 ITEM

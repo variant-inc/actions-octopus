@@ -4,14 +4,13 @@ kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-iaac-replicator
   labels:
-    cloudops/iaac/replicator: v1
+    cloudops.iaac/replicator: v1
     app.kubernetes.io/instance: {{ .Release.Name }}
     helm.sh/chart: {{ printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
     {{- if .Chart.AppVersion }}
     app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
     {{- end }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    {{- end }}
 data:
   Space: "<%= $env:SPACE_NAME %>"
   Project: "<%= $env:PROJECT_NAME %>"

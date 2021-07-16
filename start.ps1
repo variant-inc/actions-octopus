@@ -28,7 +28,7 @@ Set-Alias -Name ce -Value CommandAliasFunction -Scope script
 $octoYamlPath = [System.IO.Path]::GetFullPath((Join-Path ${env:GITHUB_WORKSPACE} ".octopus/workflow/octopus.yaml"))
 
 Write-Output "$env:ACTION_PATH/replicator.ps1"
-& $env:ACTION_PATH/templates/replicator.ps1
+& $env:ACTION_PATH/replicator/replicator.ps1
 Write-Output "Set Configmap values Complete"
 
 & $env:ACTION_PATH/steps.ps1
