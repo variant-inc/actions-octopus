@@ -1,0 +1,32 @@
+resource "aws_dynamodb_table_item" "example" {
+  table_name = "replicator_octo_projects"
+  hash_key   = "Space"
+  range_key  = "Project"
+
+  item = <<ITEM
+{
+  "Space": {
+    "S": "<%= $env:SPACE_NAME %>"
+  },
+  "Project": {
+    "S": "<%= $env:PROJECT_NAME %>"
+  },
+  "GithubRepository": {
+    "S": "<%= $env:GITHUB_REPOSITORY %>"
+  },
+  "GithubUser": {
+    "S": "<%= $env:GITHUB_ACTOR %>"
+  },
+  "Version": {
+    "S": "<%= $env:VERSION %>"
+  },
+  "Image": {
+    "S": "<%= $env:IMAGE_NAME %>"
+  },
+  "IsInfrastructure": {
+    "BOOL": tobool("<%= $env:IS_INFRASTRUCTURE %>")
+  }
+}
+ITEM
+
+}
