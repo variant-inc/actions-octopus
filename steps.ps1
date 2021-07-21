@@ -21,19 +21,6 @@ else
 {
   Write-Output "Gathering Space/Project from workflow input"
 
-  $SPACE_NAME = $env:SPACE_NAME
-  $PROJECT_NAME = $env:PROJECT_NAME
-
-  if (($null -eq $SPACE_NAME) -or ("" -eq $SPACE_NAME))
-  {
-    throw "Space Name not provided"
-  }
-
-  if (($null -eq $PROJECT_NAME) -or ("" -eq $PROJECT_NAME))
-  {
-    throw "Project Name not provided"
-  }
-
   $headers = @{
     'x-api-key'    = $env:LAZY_API_KEY
     'Content-Type' = 'application/json'

@@ -1,26 +1,3 @@
-if (Test-Path -Path $octoYamlPath -PathType Leaf)
-{
-  Write-Output "Gathering Space/Project from octopus.yaml"
-  $SPACE_NAME = ce yq eval .SpaceName $octoYamlPath
-  $PROJECT_NAME = ce yq eval .ProjectName $octoYamlPath
-}
-else
-{
-  Write-Output "Gathering Space/Project from workflow input"
-  $SPACE_NAME = $env:SPACE_NAME
-  $PROJECT_NAME = $env:PROJECT_NAME
-}
-
-if (($null -eq $SPACE_NAME) -or ("" -eq $SPACE_NAME))
-{
-  throw "Space Name not provided"
-}
-
-if (($null -eq $PROJECT_NAME) -or ("" -eq $PROJECT_NAME))
-{
-  throw "Project Name not provided"
-}
-
 if (${env:GITVERSION_BRANCHNAME} -eq "${env:DEFAULT_BRANCH}")
 {
   $channelName = "release"

@@ -33,11 +33,19 @@ inputs:
     default: ".*"
   charts_dir_path:
     description: >
-      Path to the charts directory inside deploy directory, which is packaged
-      and pushed to Octopus. This folder will contains the
-      necessary scripts/helm charts/other misc to run the deployments
+      Path to the charts directory from root dir
     required: false
     default: "charts"
+  terraform_dir_path:
+    description: >
+      Path to the terraform directory from root dir
+    required: false
+    default: "terraform"
+  is_infrastructure:
+    description: >
+      Is the repository meant for deploying only infrastructure
+    required: false
+    default: "false"
 runs:
   using: "composite"
   steps:
@@ -52,3 +60,5 @@ runs:
         FEATURE_CHANNEL_BRANCHES: ${{ inputs.feature_channel_branches }}
         ACTION_PATH: ${{ github.action_path }}
         CHARTS_DIR_PATH: ${{ inputs.charts_dir_path }}
+        IS_INFRASTRUCTURE: ${{ inputs.is_infrastructure }}
+        TERRAFORM_DIR_PATH: ${{ inputs.terraform_dir_path }}
