@@ -1,3 +1,7 @@
+[CmdLetBinding()]
+[Diagnostics.CodeAnalysis.SuppressMessage("PSAvoidGlobalVars", '')]
+Param()
+
 $ErrorActionPreference = "Stop"
 $InformationPreference = "Continue"
 $WarningPreference = "SilentlyContinue"
@@ -27,8 +31,35 @@ Set-Alias -Name ce -Value CommandAliasFunction -Scope script
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUserDeclaredVarsMoreThanAssignments', '', Scope = 'Function')]
 $octoYamlPath = [System.IO.Path]::GetFullPath((Join-Path ${env:GITHUB_WORKSPACE} ".octopus/workflow/octopus.yaml"))
 
+if (Test-Path -Path $octoYamlPath -PathType Leaf)
+{
+  Write-Output "Gathering Space/Project from octopus.yaml"
+  $octoWorkflow = $(ce yq eval -j $octoYamlPath | ConvertFrom-Json)
+
+  Write-Output $octoWorkflow
+  $global:SPACE_NAME = $octoWorkflow.SpaceName
+  $global:PROJECT_NAME = $octoWorkflow.ProjectName
+}
+else
+{
+  Write-Output "Gathering Space/Project from workflow input"
+
+  $global:SPACE_NAME = $env:SPACE_NAME
+  $global:PROJECT_NAME = $env:PROJECT_NAME
+}
+
+if ([string]::IsNullOrEmpty($SPACE_NAME))
+{
+  throw "Space Name not provided"
+}
+
+if ([string]::IsNullOrEmpty($PROJECT_NAME))
+{
+  throw "Project Name not provided"
+}
+
 Write-Output "$env:ACTION_PATH/replicator.ps1"
-& $env:ACTION_PATH/replicator/replicator.ps1
+. $env:ACTION_PATH/replicator/replicator.ps1
 Write-Output "Set Configmap values Complete"
 
 & $env:ACTION_PATH/steps.ps1

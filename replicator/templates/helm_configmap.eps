@@ -12,8 +12,8 @@ metadata:
     {{- end }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 data:
-  Space: "<%= $env:SPACE_NAME %>"
-  Project: "<%= $env:PROJECT_NAME %>"
+  Space: "<%= $SPACE_NAME %>"
+  Project: "<%= $PROJECT_NAME %>"
   GithubRepository: "<%= $env:GITHUB_REPOSITORY %>"
   GithubUser: "<%= $env:GITHUB_ACTOR %>"
   Version: "<%= $env:VERSION %>"

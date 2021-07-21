@@ -6,10 +6,10 @@ resource "aws_dynamodb_table_item" "iaac_replicator" {
   item = <<ITEM
 {
   "Space": {
-    "S": "<%= $env:SPACE_NAME %>"
+    "S": "<%= $global:SPACE_NAME %>"
   },
   "Project": {
-    "S": "<%= $env:PROJECT_NAME %>"
+    "S": "<%= $global:PROJECT_NAME %>"
   },
   "GithubRepository": {
     "S": "<%= $env:GITHUB_REPOSITORY %>"
