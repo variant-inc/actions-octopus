@@ -61,6 +61,32 @@ ce octo build-information `
   --space="${SPACE_NAME}" `
   --overwrite-mode=OverwriteExisting
 
+Write-Output "Writing Release Notes"
+$releaseNotes = ""
+$eventPayload.commits | ForEach-Object {
+  $releaseNotes += @"
+____________________
+
+#### commit $($_.id)
+
+**Author:** $($_.author.username) - $($_.author.name) <$($_.author.email)>
+
+**Committer:** $($_.committer.username) - $($_.committer.name) <$($_.committer.email)>
+
+**Date:**   $(Get-Date $_.timestamp -Format "dddd MM/dd/yyyy HH:mm K")
+
+<br/>
+
+``````text
+$($_.message)
+``````
+<br/>
+
+"@
+}
+
+$releaseNotes | Out-File -FilePath "releasenotes.txt"
+
 Write-Output "Creating Octopus Release"
 ce octo create-release `
   --project="${PROJECT_NAME}" `
@@ -68,4 +94,5 @@ ce octo create-release `
   --releaseNumber="${env:VERSION}" `
   --space="${SPACE_NAME}" `
   --channel="$channelName" `
-  --ignoreExisting
+  --ignoreExisting `
+  --releaseNotesFile="releasenotes.txt"
