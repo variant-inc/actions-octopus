@@ -27,12 +27,28 @@ ce octo push --package="./packages/${PROJECT_NAME}.${env:VERSION}.zip" `
 
 $eventPayload = Get-Content $env:GITHUB_EVENT_PATH | ConvertFrom-Json
 $commits = [System.Collections.ArrayList]@()
-$eventPayload.commits | ForEach-Object {
+if ($null -ne $eventPayload.commits)
+{
+  $eventPayload.commits | ForEach-Object {
+    $commits.Add(
+      @{
+        Id      = $_.id
+        LinkUrl = $_.url
+        Comment = $_.message
+      }
+    )
+  }
+}
+else
+{
+  $commitMessage = git log -1 --pretty=oneline
+  $commitMessage = $commitMessage -replace "${env:GITHUB_SHA} ", ""
+  Write-Information "Commit Message: $commitMessage"
   $commits.Add(
     @{
-      Id      = $_.id
-      LinkUrl = $_.url
-      Comment = $_.message
+      Id      = "${env:GITHUB_SHA}"
+      LinkUrl = "https://github.com/${env:GITHUB_REPOSITORY}/commit/${env:GITHUB_SHA}"
+      Comment = "$commitMessage"
     }
   )
 }
@@ -47,7 +63,7 @@ Write-Output "Writing Build Information"
   VcsType          = "Git"
   VcsRoot          = "https://github.com/${env:GITHUB_REPOSITORY}.git"
   VcsCommitNumber  = "${env:GITHUB_SHA}"
-  VcsCommitUrl     = "${eventPayload.head_commit.url}"
+  VcsCommitUrl     = "https://github.com/${env:GITHUB_REPOSITORY}/commit/${env:GITHUB_SHA}"
   Commits          = $commits
 } | ConvertTo-Json -Depth 10 -Compress | Out-File -FilePath "buildinformation.json"
 
@@ -61,10 +77,12 @@ ce octo build-information `
   --space="${SPACE_NAME}" `
   --overwrite-mode=OverwriteExisting
 
-Write-Output "Writing Release Notes"
 $releaseNotes = ""
-$eventPayload.commits | ForEach-Object {
-  $releaseNotes += @"
+if ($null -ne $eventPayload.commits)
+{
+  Write-Output "Writing Release Notes"
+  $eventPayload.commits | ForEach-Object {
+    $releaseNotes += @"
 ____________________
 
 #### commit $($_.id)
@@ -83,6 +101,7 @@ $($_.message)
 <br/>
 
 "@
+  }
 }
 
 $releaseNotes | Out-File -FilePath "releasenotes.txt"
