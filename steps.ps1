@@ -43,3 +43,17 @@ else
 
   $Response | ConvertTo-Json
 }
+
+Write-Output "Octopus add manual intervention step"
+
+$octoManInterventionEndpoint = "https://$env:LAZY_API_URL/octopus/spaces/$SPACE_NAME/projects/$PROJECT_NAME/add-manual-intervention-step?user=$env:GITHUB_ACTOR"
+
+Write-Output "Lazy API Manual intervention endpoint URL $octoManInterventionEndpoint"
+$headers = @{
+  'x-api-key'    = $env:LAZY_API_KEY
+  'Content-Type' = 'application/json'
+}
+$json_body = Get-Content $env:ACTION_PATH/octo_man_intervention.json | Out-String | ConvertFrom-Json
+$Response = Invoke-RestMethod -Uri $octoManInterventionEndpoint `
+-Headers $headers -Method PATCH -Body $json_body
+$Response | ConvertTo-Json

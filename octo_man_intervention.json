@@ -1,0 +1,28 @@
+{
+    "Process": [
+     {
+        "Name": "Manual Intervention Required",
+        "Condition": "Success",
+        "Properties": {
+        },
+        "StartTrigger": "StartAfterPrevious",
+        "Actions": [
+           {
+              "Name": "Manual Intervention Required",
+              "ActionType": "Octopus.Manual",
+              "IsDisabled": false,
+               "WorkerPoolVariable": "",
+              "Environments": ["development"],
+              "ExcludedEnvironments": [],
+              "Channels": [],
+               "Packages": [],
+              "Properties": {
+               "Octopus.Action.Manual.BlockConcurrentDeployments": "False",
+               "Octopus.Action.Manual.ResponsibleTeamIds": "teams-administrators",
+               "Octopus.Action.Manual.Instructions": "Approval needed from administrators to push"
+               }
+           }
+        ]
+     }
+  ]
+}
