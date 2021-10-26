@@ -46,8 +46,10 @@ $octoManInterventionEndpoint = "https://$env:LAZY_API_URL/octopus/spaces/$SPACE_
 
 Write-Output "Lazy API Manual intervention endpoint URL $octoManInterventionEndpoint"
 
+$env_list = New-Object System.Collections.ArrayList
+$env_list.Add("production")
 $Body = `
-@{"Environments"   = ["production"];
+@{"Environments"   = $env_list;
   "ResponsibleTeamIds" = "teams-administrators";
 }
 Write-Output "Manual intervention request Body"
