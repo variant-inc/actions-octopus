@@ -58,9 +58,9 @@ if ([string]::IsNullOrEmpty($PROJECT_NAME))
   throw "Project Name not provided"
 }
 
-# Write-Output "$env:ACTION_PATH/replicator.ps1"
-# . $env:ACTION_PATH/replicator/replicator.ps1
-# Write-Output "Set Configmap values Complete"
+Write-Output "$env:ACTION_PATH/replicator.ps1"
+. $env:ACTION_PATH/replicator/replicator.ps1
+Write-Output "Set Configmap values Complete"
 
 & $env:ACTION_PATH/steps.ps1
 Write-Output "Octopus Project Configuration Complete"
