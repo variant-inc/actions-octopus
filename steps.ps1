@@ -1,10 +1,9 @@
-  $headers = @{
-    'x-api-key'    = $env:LAZY_API_KEY
-    'Content-Type' = 'application/json'
-  }
+$headers = @{
+  'x-api-key'    = $env:LAZY_API_KEY
+  'Content-Type' = 'application/json'
+}
 
-if (Test-Path -Path $octoYamlPath -PathType Leaf)
-{
+if (Test-Path -Path $octoYamlPath -PathType Leaf) {
   Write-Output "Gathering Space/Project from octopus.yaml"
   $octoDeploymentSteps = ce yq eval -j $octoYamlPath
 
@@ -18,12 +17,11 @@ if (Test-Path -Path $octoYamlPath -PathType Leaf)
 
   $Response | ConvertTo-Json
 }
-else
-{
+else {
   Write-Output "Gathering Space/Project from workflow input"
 
-  $Body = `
-  @{"SpaceName"   = "$SPACE_NAME";
+  $Body = @{
+    "SpaceName"   = "$SPACE_NAME";
     "ProjectName" = "$PROJECT_NAME";
   }
 
@@ -43,17 +41,14 @@ else
 Write-Output "Octopus add manual intervention step"
 
 $octoManInterventionEndpoint = "https://$env:LAZY_API_URL/octopus/spaces/$SPACE_NAME/projects/$PROJECT_NAME/add-manual-intervention-step?user=$env:GITHUB_ACTOR"
-
 Write-Output "Lazy API Manual intervention endpoint URL $octoManInterventionEndpoint"
 
-$env_list = New-Object System.Collections.ArrayList
-$env_list.Add("production")
-$Body = `
-@{"Environments"   = $env_list;
+$Body = @{
+  "Environments"       = @("production");
   "ResponsibleTeamIds" = "teams-administrators";
 }
 Write-Output "Manual intervention request Body"
 Write-Output $Body
 $Response = Invoke-RestMethod -Uri $octoManInterventionEndpoint `
--Headers $headers -Method PATCH -Body ($Body | ConvertTo-Json)
+  -Headers $headers -Method PATCH -Body ($Body | ConvertTo-Json)
 $Response | ConvertTo-Json
