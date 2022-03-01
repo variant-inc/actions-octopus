@@ -9,7 +9,7 @@ inputs:
   deploy_package_version:
     default: "0.1.0.176"
   task_runner_version:
-    default: "0.2.0-0.1.0-f-cloud-1550-sim0001.114"
+    default: "0.2.0-0.1.0-adding-devops-sp0001.118"
 runs:
   using: "composite"
   steps:
