@@ -7,7 +7,7 @@ inputs:
     required: false
     default: master
   deploy_package_version:
-    default: "0.1.0.202"
+    default: "0.1.0.208"
   task_runner_version:
     default: "0.2.0-0.1.0-adding-devops-sp0001.118"
 runs:
