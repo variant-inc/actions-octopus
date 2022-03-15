@@ -56,7 +56,7 @@ else
 Write-Output "Writing Build Information"
 @{
   Version          = "${env:VERSION}"
-  BuildEnvironment = "GitHub Actions"
+  BuildEnvironment = "actions-octopus:v2"
   BuildNumber      = "${env:GITHUB_RUN_NUMBER}"
   BuildUrl         = "https://github.com/${env:GITHUB_REPOSITORY}/actions/runs/${env:GITHUB_RUN_ID}"
   Branch           = "${env:GITVERSION_BRANCHNAME}"
