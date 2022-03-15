@@ -53,7 +53,7 @@ $commitMessage = $commitMessage -replace "${env:GITHUB_SHA} ", ""
 Write-Information "Commit Message: $commitMessage"
 Write-Output "Writing Build Information"
 $jsonBody = @{
-  BuildEnvironment = "GitHub Actions"
+  BuildEnvironment = "actions-octopus:v1"
   Branch           = "${env:GITVERSION_BRANCHNAME}"
   BuildNumber      = "${env:GITHUB_RUN_NUMBER}"
   BuildUrl         = "https://github.com/${env:GITHUB_REPOSITORY}/actions/runs/${env:GITHUB_RUN_ID}"
