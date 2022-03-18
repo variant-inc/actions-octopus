@@ -14,7 +14,7 @@ runs:
   using: "composite"
   steps:
     - shell: pwsh
-      run: ${{ github.action_path }}/start.ps1
+      run: ${{ github.action_path }}/tasks.ps1
       env:
         INPUT_DEFAULT_BRANCH: ${{ inputs.default_branch }}
         INPUT_DEPLOY_PACKAGE_VERSION: ${{ inputs.deploy_package_version }}
