@@ -11,7 +11,7 @@ inputs:
     description: "terragrunt-variant-apps package version"
     required: false
   task_runner_version:
-    default: "0.2.0-0.1.0-adding-devops-sp0001.118"
+    default: "1.0.0-release0001-197"
     description: "cake-runner package version"
     required: false
 runs:
