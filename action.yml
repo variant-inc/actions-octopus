@@ -6,59 +6,20 @@ inputs:
     description: Default/Main Branch Name
     required: false
     default: master
-  deploy_scripts_path:
-    description: >
-      Path to the deploy scripts which is packaged
-      and pushed to Octopus. This folder will contains the
-      necessary scripts/helm charts/other misc to run the deployments
+  deploy_package_version:
+    default: "1.0.1.245"
+    description: "terragrunt-variant-apps package version"
     required: false
-    default: "."
-  version:
-    description: >
-      Semantic Version that is used for determining
-      the package and release version
-    required: true
-  space_name:
-    description: >
-      Name of the Space in Octopus. Usually, this will be Engineering,
-      Mobile, DevOps, etc.
+  task_runner_version:
+    default: "1.0.0-release0001-197"
+    description: "cake-runner package version"
     required: false
-  project_name:
-    description: Name of the project name in Octopus
-    required: false
-  feature_channel_branches:
-    description: >
-      Regex of the branches that has to deployed to dev.
-    required: false
-    default: ".*"
-  charts_dir_path:
-    description: >
-      Path to the charts directory from root dir
-    required: false
-    default: "charts"
-  terraform_dir_path:
-    description: >
-      Path to the terraform directory from root dir
-    required: false
-    default: "terraform"
-  is_infrastructure:
-    description: >
-      Is the repository meant for deploying only infrastructure
-    required: false
-    default: "false"
 runs:
   using: "composite"
   steps:
     - shell: pwsh
-      run: ${{ github.action_path }}/start.ps1
+      run: ${{ github.action_path }}/tasks.ps1
       env:
-        DEFAULT_BRANCH: ${{ inputs.default_branch }}
-        DEPLOY_SCRIPTS_PATH: ${{ inputs.deploy_scripts_path }}
-        PROJECT_NAME: ${{ inputs.project_name }}
-        VERSION: ${{ inputs.version }}
-        SPACE_NAME: ${{ inputs.space_name }}
-        FEATURE_CHANNEL_BRANCHES: ${{ inputs.feature_channel_branches }}
-        ACTION_PATH: ${{ github.action_path }}
-        CHARTS_DIR_PATH: ${{ inputs.charts_dir_path }}
-        IS_INFRASTRUCTURE: ${{ inputs.is_infrastructure }}
-        TERRAFORM_DIR_PATH: ${{ inputs.terraform_dir_path }}
+        INPUT_DEFAULT_BRANCH: ${{ inputs.default_branch }}
+        INPUT_DEPLOY_PACKAGE_VERSION: ${{ inputs.deploy_package_version }}
+        INPUT_TASK_RUNNER_VERSION: ${{ inputs.task_runner_version }}
