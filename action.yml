@@ -7,11 +7,11 @@ inputs:
     required: false
     default: master
   deploy_package_version:
-    default: "1.0.1.251"
+    default: "1.0.1.274"
     description: "terragrunt-variant-apps package version"
     required: false
   task_runner_version:
-    default: "1.0.0-release0001-197"
+    default: "1.0.0-release0001-208"
     description: "cake-runner package version"
     required: false
 runs:
