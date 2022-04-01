@@ -38,7 +38,7 @@ if ($testPath -eq $true) {
   $deployYamlsFound = Get-ChildItem -Path $variantApiDeployYamlPath -Filter "*.yaml" -Recurse
 }
 else {
-  throw "Deploy folder does not exists"
+  throw "Deploy folder does not exists in .variant directory"
 }
 
 if ($deployYamlsFound.Count -gt 0) {
