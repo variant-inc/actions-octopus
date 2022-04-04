@@ -32,13 +32,15 @@ Set-Alias -Name ce -Value CommandAliasFunction -Scope script
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUserDeclaredVarsMoreThanAssignments', '', Scope = 'Function')]
 $variantApiDeployYamlPath = [System.IO.Path]::GetFullPath((Join-Path ${RepositoryRoot} ".variant/deploy/"))
-$testPath = Test-Path -Path $variantApiDeployYamlPath
-Write-Information "Deploy folder exists in .variant directory: $testPath"
-if ($testPath -eq $true) {
+
+if (Test-Path -Path $variantApiDeployYamlPath -eq $true) {
   $deployYamlsFound = Get-ChildItem -Path $variantApiDeployYamlPath -Filter "*.yaml" -Recurse
 }
 else {
-  throw "Deploy folder does not exists in .variant directory"
+  Write-Output "`e[31m________________________________________________________________`e[0m";
+  Write-Output "`e[31mDeploy folder does not exists in .variant directory`e[0m";
+  Write-Output "`e[31m________________________________________________________________`e[0m";
+  exit 1
 }
 
 if ($deployYamlsFound.Count -gt 0) {
