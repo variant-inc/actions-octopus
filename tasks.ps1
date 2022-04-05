@@ -33,7 +33,7 @@ Set-Alias -Name ce -Value CommandAliasFunction -Scope script
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUserDeclaredVarsMoreThanAssignments', '', Scope = 'Function')]
 $variantApiDeployYamlPath = [System.IO.Path]::GetFullPath((Join-Path ${RepositoryRoot} ".variant/deploy/"))
 
-if (Test-Path -Path $variantApiDeployYamlPath -eq $true) {
+if ((Test-Path -Path $variantApiDeployYamlPath) -eq $true) {
   $deployYamlsFound = Get-ChildItem -Path $variantApiDeployYamlPath -Filter "*.yaml" -Recurse
 }
 else {
