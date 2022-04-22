@@ -24,6 +24,5 @@ Please reference [DX Workflow](https://drivevariant.atlassian.net/wiki/spaces/CL
 
 v3 runs CI using cake. Currently only repositories that do not deploy infrastructure can migrate to v3. In the future
 
-1. Change uses to `variant-inc/actions-octopus@v3`
-2. Add either `charts_dir_path` or `terraform_dir_path` variable
-3. If the project has dependencies used by other project, then set `is_infrastructure` to `true`.
+1. Change uses new action version v3: `variant-inc/actions-octopus@v3`
+2. Add a Variant Deploy Yaml File following the usage above. Note that only certain versions of charts in lazy-helm-charts are supported and may require you to update and fix breaking changes with the helm release.
