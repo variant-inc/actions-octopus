@@ -11,7 +11,7 @@ inputs:
     description: "terragrunt-variant-apps package version"
     required: false
   task_runner_version:
-    default: "1.0.0-release0001-342"
+    default: "1.0.0-release0001-343"
     description: "cake-runner package version"
     required: false
 runs:
