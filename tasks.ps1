@@ -37,9 +37,9 @@ if ((Test-Path -Path $variantApiDeployYamlPath) -eq $true) {
   $deployYamlsFound = Get-ChildItem -Path $variantApiDeployYamlPath -Filter "*.yaml" -Recurse
 }
 else {
-  Write-Output "`e[31m________________________________________________________________`e[0m";
+  Write-Output "`e[31m----------------------------------------------------------------`e[0m";
   Write-Output "`e[31mDeploy folder does not exists in .variant directory`e[0m";
-  Write-Output "`e[31m________________________________________________________________`e[0m";
+  Write-Output "`e[31m----------------------------------------------------------------`e[0m";
   exit 1
 }
 
