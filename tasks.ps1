@@ -51,6 +51,6 @@ if ($deployYamlsFound.Count -gt 0) {
   ce dotnet nuget update source cake -u "${NugetUser}" -p "${NugetToken}" --store-password-in-clear-text -s "https://nuget.pkg.github.com/variant-inc/index.json"
   ce dotnet new tool-manifest --force
   ce dotnet tool install --version "${TaskRunnerVersion}" --no-cache Variant.Cake.Runner
-  ce dotnet variant-cake-runner --target CreateRelease --path $variantApiDeployYamlPath --verbosity $CakeVerbosity
+  ce dotnet variant-cake-runner --target CreateRelease --path $variantApiDeployYamlPath
   Exit
 }
