@@ -7,15 +7,15 @@ inputs:
     required: false
     default: master
   deploy_package_version:
-    default: "1.0.1.365"
-    description: "terragrunt-variant-apps package version"
+    default: 1.0.1.365
+    description: terragrunt-variant-apps package version
     required: false
   task_runner_version:
-    default: "1.0.0-release0001-345"
-    description: "cake-runner package version"
+    default: 1.0.0-release0001-376
+    description: cake-runner package version
     required: false
 runs:
-  using: "composite"
+  using: composite
   steps:
     - shell: pwsh
       run: ${{ github.action_path }}/tasks.ps1
