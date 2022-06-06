@@ -10,17 +10,17 @@ ___
 ## Usage
 
 Please reference
-[DX Workflow](https://drivevariant.atlassian.net/wiki/spaces/CLOUD/pages/2407563355/DX+Workflow+Documentation)
+[DX Workflow](https://backstage.apps.ops-drivevariant.com/docs/default/Component/dx-docs)
 documentation as actions-octopus v3 should only be used in tandem with DX Workflow.
 DX Workflow defines and deploys both infrastructure and applications.
 
 1. Create a deployment spec in `.variant/deploy`. Reference the
-   [DX Workflow Documentation](https://drivevariant.atlassian.net/wiki/spaces/CLOUD/pages/2407563355/DX+Workflow+Documentation)
-   and these [examples](https://drivevariant.atlassian.net/wiki/spaces/CLOUD/pages/2429222950/DX+-+Full+End+to+End+Examples)
+   [DX Workflow Documentation](https://backstage.apps.ops-drivevariant.com/docs/default/Component/dx-docs/Getting-Started/Tutorials/)
+   and these [examples](https://backstage.apps.ops-drivevariant.com/docs/default/Component/dx-docs/dx-requirements/#full-end-end-example-repositories)
    for more information.
 
 2. Add a build step to your GitHub actions workflow yaml. More examples
-   [here](https://drivevariant.atlassian.net/wiki/spaces/CLOUD/pages/2407563355/DX+Workflow+Documentation#Examples).
+   [here](https://backstage.apps.ops-drivevariant.com/docs/default/Component/dx-docs/Getting-Started/Github/Github-Actions/).
 
 ```yaml
 - name: Lazy Action Octopus
