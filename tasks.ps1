@@ -46,11 +46,12 @@ else {
 if ($deployYamlsFound.Count -gt 0) {
   New-Item -ItemType Directory -Force -Path "/tmp/$env:GITHUB_REPOSITORY"
   Set-Location "/tmp/$env:GITHUB_REPOSITORY"
-  $CakeLogLevel = if ($env:CAKE_LOG_LEVEL) { $env:CAKE_LOG_LEVEL } else { "Information" };
+  $env:TMP_PATH = "/tmp"
+  $CakeLogLevel = if ($env:CAKE_LOG_LEVEL) { $env:CAKE_LOG_LEVEL } else { "Debug" };
   dotnet nuget add source --name cake --username "${NugetUser}" --password "${NugetToken}" --store-password-in-clear-text "https://nuget.pkg.github.com/variant-inc/index.json"
   ce dotnet nuget update source cake -u "${NugetUser}" -p "${NugetToken}" --store-password-in-clear-text -s "https://nuget.pkg.github.com/variant-inc/index.json"
   ce dotnet new tool-manifest --force
   ce dotnet tool install --version "${TaskRunnerVersion}" --no-cache Variant.Cake.Runner
-  ce dotnet variant-cake-runner --target CreateRelease --path $variantApiDeployYamlPath --logLevel $CakeLogLevel
+  ce dotnet variant-cake-runner --target CreateRelease --taskRunnerVersion $TaskRunnerVersion --deployYamlDirPath $variantApiDeployYamlPath --logLevel $CakeLogLevel
   Exit
 }
