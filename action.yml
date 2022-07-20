@@ -7,7 +7,7 @@ inputs:
     required: false
     default: master
   deploy_package_version:
-    default: 1.0.1.464
+    default: 1.0.1.474
     description: terragrunt-variant-apps package version
     required: false
   task_runner_version:
