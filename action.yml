@@ -7,11 +7,11 @@ inputs:
     required: false
     default: master
   deploy_package_version:
-    default: 1.0.1.475
+    default: 1.0.1-terraform-varian0001.493
     description: terragrunt-variant-apps package version
     required: false
   task_runner_version:
-    default: 1.0.0-release0001-376
+    default: 2.0.0-v2-alpha0001-867
     description: cake-runner package version
     required: false
 runs:
