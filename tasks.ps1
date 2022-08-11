@@ -48,10 +48,18 @@ if ($deployYamlsFound.Count -gt 0) {
   Set-Location "/tmp/$env:GITHUB_REPOSITORY"
   $env:TMP_PATH = "/tmp"
   $CakeLogLevel = if ($env:CAKE_LOG_LEVEL) { $env:CAKE_LOG_LEVEL } else { "Information" };
+  $SerilogLogLevel = if ($env:SERILOG_LOG_LEVEL) { $env:SERILOG_LOG_LEVEL } else { "Information" };
+
   dotnet nuget add source --name cake --username "${NugetUser}" --password "${NugetToken}" --store-password-in-clear-text "https://nuget.pkg.github.com/variant-inc/index.json"
   ce dotnet nuget update source cake -u "${NugetUser}" -p "${NugetToken}" --store-password-in-clear-text -s "https://nuget.pkg.github.com/variant-inc/index.json"
   ce dotnet new tool-manifest --force
+
   ce dotnet tool install --version "${TaskRunnerVersion}" --no-cache Variant.Cake.Runner
-  ce dotnet variant-cake-runner --target CreateRelease --taskRunnerVersion $TaskRunnerVersion --deployYamlDirPath $variantApiDeployYamlPath --logLevel $CakeLogLevel
+  ce dotnet variant-cake-runner `
+    --target CreateRelease `
+    --taskRunnerVersion $TaskRunnerVersion `
+    --deployYamlDirPath $variantApiDeployYamlPath `
+    --logLevel $CakeLogLevel `
+    --seriloglevel $SerilogLogLevel
   Exit
 }
