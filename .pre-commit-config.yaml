@@ -14,8 +14,6 @@ repos:
         args: [--no-sort-keys, --autofill]
       - id: check-added-large-files
         args: [--maxkb=500]
-      - id: no-commit-to-branch
-        args: [--branch, master, --branch, main, --branch, release]
       - id: check-shebang-scripts-are-executable
       - id: check-case-conflict
   - repo: https://github.com/lovesegfault/beautysh
