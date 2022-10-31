@@ -40,7 +40,7 @@ if ($env:INPUT_DEFAULT_BRANCH -eq $env:GITVERSION_BRANCHNAME){
   try {
     $Response = Invoke-RestMethod -Uri $sonarCheckUrl -Headers $headers -Method GET
     $Response | ConvertTo-Json
-    if ($Response.projectStatus -eq "OK") {
+    if ($Response.projectStatus.status -eq "OK") {
       Write-Output "Sonnar scan quality gate passed. Continuing with the deployment."
     } else {
       Write-Output "Sonnar scan quality gate failed. Stopping the deployment."
