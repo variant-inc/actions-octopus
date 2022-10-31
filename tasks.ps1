@@ -33,7 +33,7 @@ Set-Alias -Name ce -Value CommandAliasFunction -Scope script
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUserDeclaredVarsMoreThanAssignments', '', Scope = 'Function')]
 
 Write-Output "Starting Sonar check"
-if ($env:MASTER_BRANCH -eq $env:GITVERSION_BRANCHNAME){
+if ($env:INPUT_DEFAULT_BRANCH -eq $env:GITVERSION_BRANCHNAME){
   $sonarCheckUrl = "https://sonarcloud.io/api/qualitygates/project_status?projectKey=$env:SONAR_PROJECT_KEY&branch=$env:GITVERSION_BRANCHNAME"
   $headers = @{
       'Authorization' = 'Bearer ' + $env:SONAR_TOKEN
