@@ -11,7 +11,7 @@ inputs:
     description: terraform-variant-apps package version
     required: false
   task_runner_version:
-    default: 2.1.2-release0001-1016
+    default: 2.1.2-release0001-1024
     description: cake-runner package version
     required: false
 runs:
