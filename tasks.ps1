@@ -1,6 +1,17 @@
+<<<<<<< HEAD
 $NugetUser = $env:GITHUB_ACTOR
 $NugetToken = $env:GITHUB_TOKEN
 $TaskRunnerVersion = $env:TASK_RUNNER_VERSION
+=======
+[CmdLetBinding()]
+[Diagnostics.CodeAnalysis.SuppressMessage("PSAvoidGlobalVars", '')]
+Param(
+  $NugetUser = $env:GITHUB_ACTOR,
+  $NugetToken = $env:AZ_DEVOPS_PAT,
+  $RepositoryRoot = $env:GITHUB_WORKSPACE,
+  $TaskRunnerVersion = $env:INPUT_TASK_RUNNER_VERSION
+)
+>>>>>>> 760ea12 (move cake-runner to az devops)
 
 $ErrorActionPreference = "Stop"
 $InformationPreference = "Continue"
@@ -65,20 +76,16 @@ if ($deployYamlsFound.Count -gt 0)
     "Information"
   };
 
-  dotnet nuget add source `
-    --name cake `
-    --username "${NugetUser}" `
-    --password "${NugetToken}" `
-    --store-password-in-clear-text "https://nuget.pkg.github.com/variant-inc/index.json"
-  ce dotnet nuget update source cake `
-    -u "${NugetUser}" `
-    -p "${NugetToken}" `
-    --store-password-in-clear-text -s "https://nuget.pkg.github.com/variant-inc/index.json"
+  dotnet nuget add source --name cake --username "${NugetUser}" --password "${NugetToken}" --store-password-in-clear-text "https://pkgs.dev.azure.com/USXpress-Inc/Octopus/_packaging/Octopus/nuget/v3/index.json"
+  ce dotnet nuget update source cake -u "${NugetUser}" -p "${NugetToken}" --store-password-in-clear-text -s "https://pkgs.dev.azure.com/USXpress-Inc/Octopus/_packaging/Octopus/nuget/v3/index.json"
   ce dotnet new tool-manifest --force
 
-  ce dotnet tool install `
-    --version "${TaskRunnerVersion}" `
-    --no-cache Variant.Cake.Runner
+  if ($TaskRunnerVersion) {
+    ce dotnet tool install --version "${TaskRunnerVersion}" --no-cache Variant.Cake.Runner
+  } else {
+    ce dotnet tool install --no-cache Variant.Cake.Runner
+  }
+  $TaskRunnerVersion = (Get-Content .config/dotnet-tools.json | ConvertFrom-Json).tools."variant.cake.runner".version
   ce dotnet variant-cake-runner `
     --target CreateRelease `
     --taskRunnerVersion $TaskRunnerVersion `
