@@ -1,6 +1,5 @@
-$NugetUser = $env:GITHUB_ACTOR,
-$NugetToken = $env:SECRET__GITHUB_TOKEN,
-$RepositoryRoot = $env:GITHUB_WORKSPACE,
+$NugetUser = $env:GITHUB_ACTOR
+$NugetToken = $env:SECRET__GITHUB_TOKEN
 $TaskRunnerVersion = $env:INPUT_TASK_RUNNER_VERSION
 
 $ErrorActionPreference = "Stop"
@@ -29,7 +28,6 @@ function CommandAliasFunction
 
 Set-Alias -Name ce -Value CommandAliasFunction -Scope script
 
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUserDeclaredVarsMoreThanAssignments', '', Scope = 'Function')]
 $variantApiDeployYamlPath = [System.IO.Path]::GetFullPath(".variant/deploy/")
 
 if ((Test-Path -Path $variantApiDeployYamlPath) -eq $true)
@@ -46,7 +44,7 @@ else
 
 if ($deployYamlsFound.Count -gt 0)
 {
-  New-Item -ItemType Directory -Force -Path "/tmp/$env:GITHUB_REPOSITORY"
+  New-Item -ItemType Directory -Force -Path "/tmp/$env:GITHUB_REPOSITORY" | Out-Null
   Set-Location "/tmp/$env:GITHUB_REPOSITORY"
   $env:TMP_PATH = "/tmp"
   $CakeLogLevel = if ($env:CAKE_LOG_LEVEL)
