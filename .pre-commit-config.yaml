@@ -1,19 +1,18 @@
 ---
 repos:
+  - repo: local
+    hooks:
+      - id: action-docs
+        name: action-docs
+        entry: ./scripts/action-docs.sh
+        language: system
+        files: action.yml
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.2.0
+    rev: v4.4.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-yaml
-      - id: check-json
-      - id: fix-encoding-pragma
-        args: [--remove]
-      - id: forbid-new-submodules
-      - id: pretty-format-json
-        args: [--no-sort-keys, --autofill]
-      - id: check-added-large-files
-        args: [--maxkb=500]
       - id: check-shebang-scripts-are-executable
       - id: check-case-conflict
   - repo: https://github.com/lovesegfault/beautysh
@@ -21,16 +20,16 @@ repos:
     hooks:
       - id: beautysh
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.31.1
+    rev: v0.34.0
     hooks:
       - id: markdownlint
   - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
-    rev: 0.2.1
+    rev: 0.2.3
     hooks:
       - id: yamlfmt
         args: [--mapping, '2', --sequence, '4', --offset, '2']
   - repo: https://github.com/adrienverge/yamllint
-    rev: v1.26.3
+    rev: v1.31.0
     hooks:
       - id: yamllint
         args: [--format, parsable, --strict]
