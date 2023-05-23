@@ -1,30 +1,21 @@
-# Octopus GitHub Action
+# Actions Setup
+<!-- markdownlint-disable line-length -->
+<!-- action-docs-description -->
 
-## Input variables
-
-| Parameter                | Default  | Description                                                                                                                                                                  | Required | Example  |
-| ------------------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | -------- |
-| default_branch           | `master` | Directory of the solution file                                                                                                                                               | false    | master   |
-| deploy_scripts_path      | `.`      | Directory of the files/folders that need to be packaged and sent to octopus                                                                                                  | false    | deploy   |
-| project_name**             |          | Name of the Octopus project                                                                                                                                                  | false     | lazy-api |
-| space_name**             |          | Name of the space the Octopus project belongs to                                                                                                                                                  | false     | DevOps |
-| version                  |          | Release and Package Version for Octopus Release/Package                                                                                                                      | true     | 0.1.1    |
-| feature_channel_branches | `.*`     | Which branches should be deployed to feature channel. Refer <https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_regular_expressions> | false    | develop  |
-
-** Input required if .octopus/workflow/octopus.yaml does not exists. See [Usage with octopus.yaml](#usage-with-octopus.yaml) section.
-___
+<!-- action-docs-description -->
 
 ## Usage with octopus.yaml
 
 ### Octopus.yaml
 
-Include a file in the .octopus/workflow directory called octopus.yaml. Here you define your Octopus Project and deployement steps.
+Include a file in the .octopus/workflow directory called octopus.yaml.
+Here you define your Octopus Project and deployment steps.
 Everything in the Process object is taken from the octopus api.
 
 ```yaml
 ---
 # Name of the space where the project belongs to
-# Currently the availble ones are
+# Currently the available ones are
 # Required
 # `Engineering` `Mobile` `DataScience` `DriverProduct`
 SpaceName: DevOps
@@ -61,7 +52,7 @@ Process:
     # Multiple actions are for deployment targets which we aren't using
     Actions:
 
-        # Name of the Depployment Process
+        # Name of the Deployment Process
         # This is the name that will be visible in the UI
         # Required
       - Name: TF Apply
@@ -90,7 +81,7 @@ Process:
           # Use Package if you need to run a script included in a deploy package.
           # Default: Package
           Octopus.Action.Script.ScriptSource: Package
-          
+
           # Name of the script file relative to the deployment folder root
           # If structure of the repository is similar to below
           #     root
@@ -121,7 +112,7 @@ Process:
             - Name: deploy
           # Used when Parameters when `Octopus.Action.Script.ScriptSource` is `Package`
 
-          # Paramters to be passed to the script above
+          # Parameters to be passed to the script above
           Octopus.Action.Script.ScriptParameters: "hello world"
 
           # Files where variables that need to be substituted by Octopus using
@@ -139,7 +130,7 @@ Process:
           # Use below if the script in your deployment is Inline
           # Inline Script Source needs a Script Body where you'll enter your script
           Octopus.Action.Script.ScriptSource: Inline
-          
+
           # The syntax of the script that you are trying to execute
           # Can be `Powershell` `Bash` `CSharp` `FSharp` `Python`
           # Default: `Bash`
@@ -167,7 +158,7 @@ Nested Schema for Process
 - Condition (String) When to run the step, (Success, Always, Variable, Failure)
 - StartTrigger (String) Whether to run this step after the previous step (StartAfterPrevious) or at the same time as the previous step (StartWithPrevious)
 - Properties (Map of String) Extra options
-  
+
   Example keys
   - Octopus.Step.ConditionVariableExpression
 - Actions (List) See below for nested schema for Actions
@@ -184,7 +175,7 @@ Nested Schema for Actions
 - Condition (String) The condition associated with this deployment action.
 - Environments (List of String) The environments within which this deployment action will run.
 - ExcludedEnvironments (List of String) The environments that this step will be skipped in
-- Packages (List) The package assocated with this action. (see below for nested schema)
+- Packages (List) The package associated with this action. (see below for nested schema)
 - Properties (Map of String) The properties associated with this deployment action
 
   Example keys
@@ -205,7 +196,7 @@ Nested Schema for Packages
 
 ### <github_workflow>.yaml
 
-Include anction-octopus input variables in your actions yamls file.
+Include action-octopus input variables in your actions YAMLs file.
 
 ```yaml
 
@@ -220,7 +211,7 @@ Include anction-octopus input variables in your actions yamls file.
 
 ___
 
-## Usage Without Ocotpus.yaml
+## Usage Without Octopus.yaml
 
 To run without using Octopus configuration as code, include space_name and project_name inputs within your github workflow.
 
@@ -234,5 +225,28 @@ To run without using Octopus configuration as code, include space_name and proje
         project_name: ${{ env.PROJECT_NAME }}
         version: ${{ steps.lazy-setup.outputs.image_version }}
         space_name: ${{ env.OCTOPUS_SPACE_NAME }}
-
 ```
+
+<!-- action-docs-inputs -->
+## Inputs
+
+| parameter | description | required | default |
+| --- | --- | --- | --- |
+| default_branch | Default/Main Branch Name | `false` | master |
+| deploy_scripts_path | Path to the deploy scripts which is packaged and pushed to Octopus. This folder will contains the necessary scripts/helm charts/other misc to run the deployments  | `false` | . |
+| version | Semantic Version that is used for determining the package and release version  | `true` |  |
+| space_name | Name of the Space in Octopus. Usually, this will be Engineering, Mobile, DevOps, etc.  | `false` |  |
+| project_name | Name of the project name in Octopus | `false` |  |
+| feature_channel_branches | Regex of the branches that has to deployed to dev.  | `false` | .* |
+<!-- action-docs-inputs -->
+<!-- markdownlint-enable line-length -->
+
+<!-- action-docs-outputs -->
+
+<!-- action-docs-outputs -->
+
+<!-- action-docs-runs -->
+## Runs
+
+This action is a `composite` action.
+<!-- action-docs-runs -->
