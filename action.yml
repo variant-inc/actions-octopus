@@ -2,10 +2,6 @@
 name: Lazy Octopus Action
 description: Create Release in Octopus
 inputs:
-  default_branch:
-    description: Default/Main Branch Name
-    required: false
-    default: master
   deploy_package_version:
     default: 1.1.1.663
     description: terraform-variant-apps package version
@@ -17,9 +13,22 @@ inputs:
 runs:
   using: composite
   steps:
-    - shell: pwsh
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: |
+          6.0.x
+    - name: Set Default Branch
+      shell: bash
+      run: |
+        if [ "$GitVersion_PreReleaseLabel" == "" ]; then
+          echo "INPUT_DEFAULT_BRANCH=$GITVERSION_BRANCHNAME" >>"$GITHUB_ENV"
+        fi
+    - name: Setup Octopus Project & Release
+      shell: pwsh
       run: ${{ github.action_path }}/tasks.ps1
       env:
-        INPUT_DEFAULT_BRANCH: ${{ inputs.default_branch }}
         INPUT_DEPLOY_PACKAGE_VERSION: ${{ inputs.deploy_package_version }}
-        INPUT_TASK_RUNNER_VERSION: ${{ inputs.task_runner_version }}
+        TASK_RUNNER_VERSION: ${{ inputs.task_runner_version }}
+        OCTOPUS_CLI_API_KEY: ${{ env.OCTOPUS_CLI_API_KEY }}
+        OCTOPUS_CLI_SERVER: ${{ env.OCTOPUS_CLI_SERVER }}

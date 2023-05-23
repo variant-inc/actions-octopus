@@ -1,5 +1,32 @@
 # Octopus GitHub Action
 
+<!-- action-docs-description -->
+## Description
+
+Create Release in Octopus
+<!-- action-docs-description -->
+
+<!-- markdownlint-disable line-length -->
+<!-- action-docs-inputs -->
+## Inputs
+
+| parameter | description | required | default |
+| --- | --- | --- | --- |
+| deploy_package_version | terraform-variant-apps package version | `false` | 1.1.1.663 |
+| task_runner_version | cake-runner package version | `false` | 2.1.2-release0001-1094 |
+<!-- action-docs-inputs -->
+<!-- markdownlint-enable line-length -->
+
+<!-- action-docs-outputs -->
+
+<!-- action-docs-outputs -->
+
+<!-- action-docs-runs -->
+## Runs
+
+This action is a `composite` action.
+<!-- action-docs-runs -->
+
 ## Input variables
 
 | Parameter     | Default  | Description                   | Required| Example|
