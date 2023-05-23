@@ -32,3 +32,5 @@ runs:
         TASK_RUNNER_VERSION: ${{ inputs.task_runner_version }}
         OCTOPUS_CLI_API_KEY: ${{ env.OCTOPUS_CLI_API_KEY }}
         OCTOPUS_CLI_SERVER: ${{ env.OCTOPUS_CLI_SERVER }}
+    - name: Create Release Action
+      uses: variant-inc/actions-collection/create-release-tag@v2
