@@ -2,13 +2,14 @@
 
 ## Octopus.yaml
 
-Include a file in the .octopus/workflow directory called octopus.yaml. Here you define your Octopus Project and deployement steps.
+Include a file in the .octopus/workflow directory called octopus.yaml.
+Here you define your Octopus Project and deployment steps.
 Everything in the Process object is taken from the octopus api.
 
 ```yaml
 ---
 # Name of the space where the project belongs to
-# Currently the availble ones are
+# Currently the available ones are
 # Required
 # `Engineering` `Mobile` `DataScience` `DriverProduct`
 SpaceName: DevOps
@@ -100,7 +101,9 @@ Process:
           # Required
           Octopus.Action.Script.ScriptFileName: deploy.ps1
 
-          # Provide only 1 Name. This name will be the folder where the package for the release will be extracted
+          # Provide only 1 Name.
+          # This name will be the folder where the package for
+          # the release will be extracted
           Packages:
             - Name: deploy
           # Used when Parameters when `Octopus.Action.Script.ScriptSource` is `Package`
@@ -108,13 +111,15 @@ Process:
           # Paramters to be passed to the script above
           Octopus.Action.Script.ScriptParameters: "hello world"
 
-          # Files where variables that need to be substituted by Octopus using
+          # Files where variables that need to be
+          # substituted by Octopus using
           # Structured configuration variables
           # Supports: `json` `yml` `yaml` `xml` `java properties`
           # https://octopus.com/docs/deployment-process/configuration-features/structured-configuration-variables-feature
           Octopus.Action.Package.JsonConfigurationVariablesTargets: terraform/environment/octo.tfvars.json
 
-          # Files where variables that need to be substituted by Octopus using
+          # Files where variables that need to be substituted by
+          # Octopus using
           # simple variable substitution
           # Supports: `any plain text file`
           # https://octopus.com/docs/projects/variables/variable-substitutions
@@ -128,12 +133,14 @@ Process:
           # Can be `Powershell` `Bash` `CSharp` `FSharp` `Python`
           # Default: `Bash`
           Octopus.Action.Script.Syntax: Bash
-          # Required when Parameters when `Octopus.Action.Script.ScriptSource` is `Inline`
+          # Required when Parameters when\
+          # `Octopus.Action.Script.ScriptSource` is `Inline`
 
           # Contains the script that will be executed
           Octopus.Action.Script.ScriptBody: |
             echo "Hello World"
-          # Required when Parameters when `Octopus.Action.Script.ScriptSource` is `Inline`
+          # Required when Parameters when
+          # `Octopus.Action.Script.ScriptSource` is `Inline`
 ```
 
 For more [examples](file:/../examples/.octopus), see examples/.octopus/workflow directory
@@ -142,14 +149,18 @@ For more [examples](file:/../examples/.octopus), see examples/.octopus/workflow 
 
 - SpaceName (String) The name of the Space associated with the Project.
 - ProjectName (String) The name of the Project associated with this deployment process.
-- Process (List) See below for nested schema for Process. Each process is a deployment step.
+- Process (List) See below for nested schema for Process.
+  Each process is a deployment step.
 
 Nested Schema for Process
 
 - Name (String) Name of the Process
-- PackageRequirement (String) Whether to run this step before or after package acquisition (if possible). (LetOctopusDecide, AfterPackageAcquisition, BeforePackageAcquisition)
+- PackageRequirement (String) Whether to run this step before or after
+  package acquisition (if possible).
+  (LetOctopusDecide, AfterPackageAcquisition, BeforePackageAcquisition)
 - Condition (String) When to run the step, (Success, Always, Variable, Failure)
-- StartTrigger (String) Whether to run this step after the previous step (StartAfterPrevious) or at the same time as the previous step (StartWithPrevious)
+- StartTrigger (String) Whether to run this step after the previous step
+  (StartAfterPrevious) or at the same time as the previous step (StartWithPrevious)
 - Properties (Map of String) Extra options
 
   Example keys
@@ -166,10 +177,14 @@ Nested Schema for Actions
 - CanBeUsedForProjectVersioning (Boolean)
 - Channels (List of String) The channels associated with this deployment action
 - Condition (String) The condition associated with this deployment action.
-- Environments (List of String) The environments within which this deployment action will run.
-- ExcludedEnvironments (List of String) The environments that this step will be skipped in
-- Packages (List) The package assocated with this action. (see below for nested schema)
-- Properties (Map of String) The properties associated with this deployment action
+- Environments (List of String)
+  The environments within which this deployment action will run.
+- ExcludedEnvironments (List of String)
+  The environments that this step will be skipped in
+- Packages (List) The package assocated with this action.
+  (see below for nested schema)
+- Properties (Map of String)
+  The properties associated with this deployment action
 
   Example keys
   - Octopus.Action.RunOnServer (Boolean)
@@ -180,7 +195,8 @@ Nested Schema for Actions
   - Octopus.Action.Package.PackageId (String)
   - Octopus.Action.Package.DownloadOnTentacle (Boolean)
   - Octopus.Action.Script.ScriptParameters (String)
-  - Octopus.Action.Package.JsonConfigurationVariablesTargets (String) PAth of files to substitute variables
+  - Octopus.Action.Package.JsonConfigurationVariablesTargets (String)
+    Path of files to substitute variables
   - Octopus.Action.SubstituteInFiles.TargetFiles (String) Path of files to substitute
 
 Nested Schema for Packages
