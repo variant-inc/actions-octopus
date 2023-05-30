@@ -6,7 +6,7 @@ inputs:
     default: 1.1.1.663
     description: terraform-variant-apps package version
     required: false
-  task_runner_version:
+  cake_runner_version:
     description: cake-runner package version
     required: false
 runs:
@@ -28,7 +28,7 @@ runs:
       run: ${{ github.action_path }}/tasks.ps1
       env:
         INPUT_DEPLOY_PACKAGE_VERSION: ${{ inputs.deploy_package_version }}
-        TASK_RUNNER_VERSION: ${{ inputs.task_runner_version }}
+        CAKE_RUNNER_VERSION: ${{ inputs.cake_runner_version }}
         OCTOPUS_CLI_API_KEY: ${{ env.OCTOPUS_CLI_API_KEY }}
         OCTOPUS_CLI_SERVER: ${{ env.OCTOPUS_CLI_SERVER }}
     - name: Create Release Action
