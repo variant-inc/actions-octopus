@@ -5,6 +5,32 @@
 ** Input required if .octopus/workflow/octopus.yaml does not exists.
 See [Usage with octopus.yaml](#with-octopusyaml) section.
 *** Either `charts_dir_path` or `terraform_dir_path` is required.
+<!-- action-docs-description -->
+
+<!-- markdownlint-disable line-length -->
+<!-- action-docs-inputs -->
+## Inputs
+
+| parameter | description | required | default |
+| --- | --- | --- | --- |
+| default_branch | Default/Main Branch Name | `false` | master |
+| deploy_scripts_path | Path to the deploy scripts which is packaged and pushed to Octopus. This folder will contains the necessary scripts/helm charts/other misc to run the deployments  | `false` | . |
+| version | Semantic Version that is used for determining the package and release version  | `true` |  |
+| space_name | Name of the Space in Octopus. Usually, this will be Engineering, Mobile, DevOps, etc.  | `false` |  |
+| project_name | Name of the project name in Octopus | `false` |  |
+| feature_channel_branches | Regex of the branches that has to deployed to dev.  | `false` | .* |
+<!-- action-docs-inputs -->
+<!-- markdownlint-enable line-length -->
+
+<!-- action-docs-outputs -->
+
+<!-- action-docs-outputs -->
+
+<!-- action-docs-runs -->
+## Runs
+
+This action is a `composite` action.
+<!-- action-docs-runs -->
 
 ## Usage
 
@@ -39,29 +65,3 @@ application to know whether a specific repository has been deployed in an enviro
 2. Add either `charts_dir_path` or `terraform_dir_path` variable
 3. If the project has dependencies used by other project,
   then set `is_infrastructure` to `true`.
-<!-- action-docs-description -->
-
-<!-- markdownlint-disable line-length -->
-<!-- action-docs-inputs -->
-## Inputs
-
-| parameter | description | required | default |
-| --- | --- | --- | --- |
-| default_branch | Default/Main Branch Name | `false` | master |
-| deploy_scripts_path | Path to the deploy scripts which is packaged and pushed to Octopus. This folder will contains the necessary scripts/helm charts/other misc to run the deployments  | `false` | . |
-| version | Semantic Version that is used for determining the package and release version  | `true` |  |
-| space_name | Name of the Space in Octopus. Usually, this will be Engineering, Mobile, DevOps, etc.  | `false` |  |
-| project_name | Name of the project name in Octopus | `false` |  |
-| feature_channel_branches | Regex of the branches that has to deployed to dev.  | `false` | .* |
-<!-- action-docs-inputs -->
-<!-- markdownlint-enable line-length -->
-
-<!-- action-docs-outputs -->
-
-<!-- action-docs-outputs -->
-
-<!-- action-docs-runs -->
-## Runs
-
-This action is a `composite` action.
-<!-- action-docs-runs -->
