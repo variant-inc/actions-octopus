@@ -1,5 +1,5 @@
 $NugetUser = $env:GITHUB_ACTOR
-$NugetToken = $env:GITHUB_TOKEN
+$NugetToken = $env:AZ_DEVOPS_PAT
 $CakeRunnerVersion = $env:CAKE_RUNNER_VERSION
 
 $ErrorActionPreference = "Stop"
