@@ -36,8 +36,9 @@ description: |
     the helm release.
 inputs:
   deploy_package_version:
-    default: 1.1.1.663
-    description: terraform-variant-apps package version
+    description: |
+      terraform-variant-apps package version
+      Defaults to latest release version. Can be overriden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).
     required: false
   cake_runner_version:
     description: |
