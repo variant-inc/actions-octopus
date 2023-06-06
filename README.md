@@ -13,7 +13,7 @@ Create Release in Octopus
 | parameter | description | required | default |
 | --- | --- | --- | --- |
 | deploy_package_version | terraform-variant-apps package version | `false` | 1.1.1.663 |
-| task_runner_version | cake-runner package version | `false` | 2.1.2-release0001-1094 |
+| task_runner_version | cake-runner package version | `false` | 2.1.2-release0001-1130 |
 <!-- action-docs-inputs -->
 <!-- markdownlint-enable line-length -->
 
