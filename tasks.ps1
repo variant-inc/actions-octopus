@@ -1,6 +1,6 @@
 $NugetUser = $env:GITHUB_ACTOR
-$NugetToken = $env:GITHUB_TOKEN
-$TaskRunnerVersion = $env:TASK_RUNNER_VERSION
+$NugetToken = $env:AZ_DEVOPS_PAT
+$CakeRunnerVersion = $env:CAKE_RUNNER_VERSION
 
 $ErrorActionPreference = "Stop"
 $InformationPreference = "Continue"
@@ -65,23 +65,25 @@ if ($deployYamlsFound.Count -gt 0)
     "Information"
   };
 
-  dotnet nuget add source `
-    --name cake `
-    --username "${NugetUser}" `
-    --password "${NugetToken}" `
-    --store-password-in-clear-text "https://nuget.pkg.github.com/variant-inc/index.json"
-  ce dotnet nuget update source cake `
-    -u "${NugetUser}" `
-    -p "${NugetToken}" `
-    --store-password-in-clear-text -s "https://nuget.pkg.github.com/variant-inc/index.json"
+  [pscredential]$cred = New-Object System.Management.Automation.PSCredential ($NugetUser, $(ConvertTo-SecureString $NugetToken -AsPlainText -Force))
+  Register-PackageSource -Name "cake" -Credential $cred -Location "https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json" -ProviderName "NuGet" -Trusted
+  if ($env:INPUT_DEPLOY_PACKAGE_VERSION.length -eq 0){
+    $env:INPUT_DEPLOY_PACKAGE_VERSION = (Find-Package -Name "terraform-variant-apps" -Source "cake" -Credential $cred -Provider "NuGet" -AllVersions -MinimumVersion 0 | Sort-Object {$_.Version} | Select-Object -Last 1).Version
+  }
+
+  dotnet nuget add source --name cake --username "${NugetUser}" --password "${NugetToken}" --store-password-in-clear-text "https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json"
+  dotnet nuget update source cake -u "${NugetUser}" -p "${NugetToken}" --store-password-in-clear-text -s "https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json"
   ce dotnet new tool-manifest --force
 
-  ce dotnet tool install `
-    --version "${TaskRunnerVersion}" `
-    --no-cache Variant.Cake.Runner
+  if ($CakeRunnerVersion) {
+    ce dotnet tool install --version "${CakeRunnerVersion}" --no-cache Variant.Cake.Runner
+  } else {
+    ce dotnet tool install --no-cache Variant.Cake.Runner
+  }
+  $CakeRunnerVersion = (Get-Content .config/dotnet-tools.json | ConvertFrom-Json).tools."variant.cake.runner".version
   ce dotnet variant-cake-runner `
     --target CreateRelease `
-    --taskRunnerVersion $TaskRunnerVersion `
+    --cakeRunnerVersion $CakeRunnerVersion `
     --deployYamlDirPath $variantApiDeployYamlPath `
     --logLevel $CakeLogLevel `
     --seriloglevel $SerilogLogLevel

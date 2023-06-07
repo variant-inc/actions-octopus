@@ -1,14 +1,49 @@
 ---
+# yamllint disable rule:line-length
 name: Lazy Octopus Action
-description: Create Release in Octopus
+description: |
+  Github Action to create release in Octopus.
+
+  ## Usage
+
+  Please reference
+  [DX Workflow](https://backstage.apps.ops-drivevariant.com/docs/default/Component/dx-docs)
+  documentation as actions-octopus v3 should only be used in tandem with DX Workflow.
+  DX Workflow defines and deploys both infrastructure and applications.
+
+  1. Create a deployment spec in `.variant/deploy`. Reference the
+    [DX Workflow Documentation](https://backstage.apps.ops-drivevariant.com/docs/default/Component/dx-docs/Getting-Started/Tutorials/)
+    and these [examples](https://backstage.apps.ops-drivevariant.com/docs/default/Component/dx-docs/dx-requirements/#more-examples)
+    for more information.
+
+  2. Add a build step to your GitHub actions workflow yaml. More examples
+    [here](https://backstage.apps.ops-drivevariant.com/docs/default/Component/dx-docs/Getting-Started/Github/Github-Actions/#examples-of-github-actions-that-the-dx-workflow-supports).
+
+  ```yaml
+  - name: Lazy Action Octopus
+    uses: variant-inc/actions-octopus@v3
+  ```
+
+  ## Migrating to v3
+
+  v3 runs CI using cake. Currently only repositories that do not deploy
+  infrastructure can migrate to v3.
+
+  1. Change uses new action version v3: `variant-inc/actions-octopus@v3`
+  2. Add a Variant Deploy Yaml File following the usage above.
+    Note that only certain versions of charts in lazy-helm-charts are supported
+    and may require you to update and fix breaking changes with
+    the helm release.
 inputs:
   deploy_package_version:
-    default: 1.1.1.663
-    description: terraform-variant-apps package version
+    description: |
+      terraform-variant-apps package version
+      Defaults to latest release version. Can be overriden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).
     required: false
-  task_runner_version:
-    default: 2.1.2-release0001-1130
-    description: cake-runner package version
+  cake_runner_version:
+    description: |
+      cake-runner package version
+      Defaults to latest release version. Can be overriden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).
     required: false
 runs:
   using: composite
@@ -29,7 +64,7 @@ runs:
       run: ${{ github.action_path }}/tasks.ps1
       env:
         INPUT_DEPLOY_PACKAGE_VERSION: ${{ inputs.deploy_package_version }}
-        TASK_RUNNER_VERSION: ${{ inputs.task_runner_version }}
+        CAKE_RUNNER_VERSION: ${{ inputs.cake_runner_version }}
         OCTOPUS_CLI_API_KEY: ${{ env.OCTOPUS_CLI_API_KEY }}
         OCTOPUS_CLI_SERVER: ${{ env.OCTOPUS_CLI_SERVER }}
     - name: Create Release Action
