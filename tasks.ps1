@@ -65,15 +65,18 @@ if ($deployYamlsFound.Count -gt 0)
     "Information"
   };
 
-  [pscredential]$cred = New-Object System.Management.Automation.PSCredential ($NugetUser, $(ConvertTo-SecureString $NugetToken -AsPlainText -Force))
-  Register-PackageSource -Name "cake" -Credential $cred -Location "https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json" -ProviderName "NuGet" -Trusted
-  if ($env:INPUT_DEPLOY_PACKAGE_VERSION.length -eq 0){
-    $env:INPUT_DEPLOY_PACKAGE_VERSION = (Find-Package -Name "terraform-variant-apps" -Source "cake" -Credential $cred -Provider "NuGet" -AllVersions -MinimumVersion 0 | Sort-Object {$_.Version} | Select-Object -Last 1).Version
-  }
-
   dotnet nuget add source --name cake --username "${NugetUser}" --password "${NugetToken}" --store-password-in-clear-text "https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json"
   dotnet nuget update source cake -u "${NugetUser}" -p "${NugetToken}" --store-password-in-clear-text -s "https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json"
   ce dotnet new tool-manifest --force
+
+  [pscredential]$cred = New-Object System.Management.Automation.PSCredential ($NugetUser, $(ConvertTo-SecureString $NugetToken -AsPlainText -Force))
+  Register-PackageSource -Name "cake" -Credential $cred -Location "https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json" -ProviderName "NuGet" -Trusted
+  if ($env:INPUT_DEPLOY_PACKAGE_VERSION.length -eq 0){
+    $message = dotnet tool install --no-cache terraform-variant-apps
+  } elseif ([regex]::match($env:INPUT_DEPLOY_PACKAGE_VERSION,'[\[\]()]').Success) {
+    $message = dotnet tool install --version "${env:INPUT_DEPLOY_PACKAGE_VERSION}" --no-cache terraform-variant-apps
+    $env:INPUT_DEPLOY_PACKAGE_VERSION = [regex]::match($message,'\d\.\d\.\d').Groups[0].Value
+  }
 
   if ($CakeRunnerVersion) {
     ce dotnet tool install --version "${CakeRunnerVersion}" --no-cache Variant.Cake.Runner
