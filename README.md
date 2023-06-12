@@ -44,8 +44,8 @@ infrastructure can migrate to v3.
 
 | parameter | description | required | default |
 | --- | --- | --- | --- |
-| deploy_package_version | terraform-variant-apps package version Defaults to latest release version. Can be overriden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).  | `false` | [1.*,1.2) |
-| cake_runner_version | cake-runner package version Defaults to latest release version. Can be overriden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).  | `false` |  |
+| deploy_package_version | terraform-variant-apps package version Defaults to latest release version. Can be overriden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).  | `false` | [1.1.*,1.2) |
+| cake_runner_version | cake-runner package version Defaults to latest release version. Can be overriden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).  | `false` | [1.1.*,1.2) |
 <!-- action-docs-inputs -->
 <!-- markdownlint-enable line-length -->
 
