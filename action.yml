@@ -50,3 +50,5 @@ runs:
         SPACE_NAME: ${{ inputs.space_name }}
         FEATURE_CHANNEL_BRANCHES: ${{ inputs.feature_channel_branches }}
         ACTION_PATH: ${{ github.action_path }}
+    - name: Create Release Action
+      uses: variant-inc/actions-collection/create-release-tag@v2
