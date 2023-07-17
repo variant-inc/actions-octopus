@@ -77,6 +77,7 @@ if ($deployYamlsFound.Count -gt 0)
     $message = dotnet tool install --version "${env:INPUT_DEPLOY_PACKAGE_VERSION}" --no-cache terraform-variant-apps
     $env:INPUT_DEPLOY_PACKAGE_VERSION = [regex]::match($message,'\d+\.\d+\.\d+').Groups[0].Value
   }
+  Write-Host "terraform-variant-apps version: $env:INPUT_DEPLOY_PACKAGE_VERSION"
 
   if ($CakeRunnerVersion) {
     ce dotnet tool install --version "${CakeRunnerVersion}" --no-cache Variant.Cake.Runner
