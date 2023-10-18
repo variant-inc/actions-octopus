@@ -4,6 +4,8 @@ name: Pre-Commit
 
 on:  # yamllint disable-line rule:truthy
   push:
+    branches:
+      - '**'
 
 jobs:
   preCommit:
