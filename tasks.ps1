@@ -74,8 +74,8 @@ if ($deployYamlsFound.Count -gt 0)
   if ($env:INPUT_DEPLOY_PACKAGE_VERSION.length -eq 0){
     $message = dotnet tool install --no-cache terraform-variant-apps
   } elseif ([regex]::match($env:INPUT_DEPLOY_PACKAGE_VERSION,'[\[\]()]').Success) {
-    $message = dotnet tool install --version "${env:INPUT_DEPLOY_PACKAGE_VERSION}" --no-cache terraform-variant-apps
-    $env:INPUT_DEPLOY_PACKAGE_VERSION = [regex]::match($message,'\d+\.\d+\.\d+').Groups[0].Value
+    $message = $(& dotnet tool install --version "${env:INPUT_DEPLOY_PACKAGE_VERSION}" --no-cache terraform-variant-apps ) 2>&1
+    $env:INPUT_DEPLOY_PACKAGE_VERSION = [regex]::match($message, '\d+\.\d+\.\d+').Groups[0].Value
   }
   Write-Host "terraform-variant-apps version: $env:INPUT_DEPLOY_PACKAGE_VERSION"
 
