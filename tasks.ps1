@@ -29,18 +29,18 @@ function CommandAliasFunction
 
 Set-Alias -Name ce -Value CommandAliasFunction -Scope script
 
-$variantApiDeployYamlPath = [System.IO.Path]::GetFullPath(".variant/deploy/")
+$DeployYamlDir = [System.IO.Path]::GetFullPath($env:DEPLOY_YAML_DIR)
 
-if ((Test-Path -Path $variantApiDeployYamlPath) -eq $true)
+if ((Test-Path -Path $DeployYamlDir) -eq $true)
 {
   $deployYamlsFound = Get-ChildItem `
-    -Path $variantApiDeployYamlPath `
+    -Path $DeployYamlDir `
     -Filter "*.*ml" -Recurse `
   | Where-Object { $_.Name -match ".(yaml|yml)" }
 }
 else
 {
-  throw "::error::Deploy folder does not exists in .variant directory";
+  throw "::error::Deploy folder does not exists in $env:DEPLOY_YAML_DIR directory";
 }
 
 if ($deployYamlsFound.Count -gt 0)
@@ -88,7 +88,7 @@ if ($deployYamlsFound.Count -gt 0)
   ce dotnet variant-cake-runner `
     --target CreateRelease `
     --cakeRunnerVersion $CakeRunnerVersion `
-    --deployYamlDirPath $variantApiDeployYamlPath `
+    --deployYamlDirPath $DeployYamlDir `
     --logLevel $CakeLogLevel `
     --seriloglevel $SerilogLogLevel
 }

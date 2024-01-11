@@ -47,6 +47,12 @@ inputs:
       Defaults to latest release version. Can be overriden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).
     required: false
     default: '[*,1.5)'
+  deploy_yaml_dir:
+    description: |
+      Defaults to `.variant/deploy` for backwards compatibility.
+      This is the place where the YAML files for DX are located.
+    required: false
+    default: .variant/deploy
 runs:
   using: composite
   steps:
@@ -69,5 +75,6 @@ runs:
         CAKE_RUNNER_VERSION: ${{ inputs.cake_runner_version }}
         OCTOPUS_CLI_API_KEY: ${{ env.OCTOPUS_CLI_API_KEY }}
         OCTOPUS_CLI_SERVER: ${{ env.OCTOPUS_CLI_SERVER }}
+        DEPLOY_YAML_DIR: ${{ inputs.deploy_yaml_dir }}
     - name: Create Release Action
       uses: variant-inc/actions-collection/create-release-tag@v2
