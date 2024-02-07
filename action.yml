@@ -57,7 +57,7 @@ runs:
   using: composite
   steps:
     - name: Setup dotnet
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: |
           7.0.x
@@ -65,7 +65,7 @@ runs:
       shell: bash
       run: |
         if [ "$GitVersion_PreReleaseLabel" == "" ]; then
-          echo "INPUT_DEFAULT_BRANCH=$GITVERSION_BRANCHNAME" >>"$GITHUB_ENV"
+          echo "INPUT_DEFAULT_BRANCH=$Gitversion_Branchname" >>"$GITHUB_ENV"
         fi
     - name: Setup Octopus Project & Release
       shell: pwsh
