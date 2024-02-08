@@ -65,7 +65,7 @@ runs:
       shell: bash
       run: |
         if [ "$GitVersion_PreReleaseLabel" == "" ]; then
-          echo "INPUT_DEFAULT_BRANCH=$Gitversion_Branchname" >>"$GITHUB_ENV"
+          echo "INPUT_DEFAULT_BRANCH=$GitVersion_BranchName" >>"$GITHUB_ENV"
         fi
     - name: Setup Octopus Project & Release
       shell: pwsh
