@@ -1,8 +1,8 @@
-if (${env:GITVERSION_BRANCHNAME} -eq "${env:DEFAULT_BRANCH}")
+if (${env:GitVersion_BranchName} -eq "${env:DEFAULT_BRANCH}")
 {
   $channelName = "release"
 }
-elseif (${env:GITVERSION_BRANCHNAME} -match "${env:FEATURE_CHANNEL_BRANCHES}")
+elseif (${env:GitVersion_BranchName} -match "${env:FEATURE_CHANNEL_BRANCHES}")
 {
   $channelName = "feature"
 }
@@ -59,7 +59,7 @@ Write-Output "Writing Build Information"
   BuildEnvironment = "actions-octopus:v2"
   BuildNumber      = "${env:GITHUB_RUN_NUMBER}"
   BuildUrl         = "https://github.com/${env:GITHUB_REPOSITORY}/actions/runs/${env:GITHUB_RUN_ID}"
-  Branch           = "${env:GITVERSION_BRANCHNAME}"
+  Branch           = "${env:GitVersion_BranchName}"
   VcsType          = "Git"
   VcsRoot          = "https://github.com/${env:GITHUB_REPOSITORY}.git"
   VcsCommitNumber  = "${env:GITHUB_SHA}"
