@@ -21,11 +21,11 @@ if (($null -eq $PROJECT_NAME) -or ("" -eq $PROJECT_NAME))
   throw "Project Name not provided"
 }
 
-if (${env:GITVERSION_BRANCHNAME} -eq "${env:DEFAULT_BRANCH}")
+if (${env:GitVersion_BranchName} -eq "${env:DEFAULT_BRANCH}")
 {
   $channelName = "release"
 }
-elseif (${env:GITVERSION_BRANCHNAME} -match "${env:FEATURE_CHANNEL_BRANCHES}")
+elseif (${env:GitVersion_BranchName} -match "${env:FEATURE_CHANNEL_BRANCHES}")
 {
   $channelName = "feature"
 }
@@ -54,7 +54,7 @@ Write-Information "Commit Message: $commitMessage"
 Write-Output "Writing Build Information"
 $jsonBody = @{
   BuildEnvironment = "actions-octopus:v1"
-  Branch           = "${env:GITVERSION_BRANCHNAME}"
+  Branch           = "${env:GitVersion_BranchName}"
   BuildNumber      = "${env:GITHUB_RUN_NUMBER}"
   BuildUrl         = "https://github.com/${env:GITHUB_REPOSITORY}/actions/runs/${env:GITHUB_RUN_ID}"
   VcsCommitNumber  = "${env:GITHUB_SHA}"
