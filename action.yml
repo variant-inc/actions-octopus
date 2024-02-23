@@ -35,18 +35,18 @@ description: |
     and may require you to update and fix breaking changes with
     the helm release.
 inputs:
-  deploy_package_version:
+  tf_apps_version:
     description: |
       terraform-variant-apps package version
       Defaults to latest release version. Can be overriden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).
     required: false
     default: '[*,1.6)'
-  cake_runner_version:
+  mage_runner_version:
     description: |
-      cake-runner package version
+      mage-runner package version
       Defaults to latest release version. Can be overriden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).
     required: false
-    default: '[*,1.6)'
+    default: '[*,1.1)'
   deploy_yaml_dir:
     description: |
       Defaults to `.variant/deploy` for backwards compatibility.
@@ -71,8 +71,8 @@ runs:
       shell: pwsh
       run: ${{ github.action_path }}/tasks.ps1
       env:
-        INPUT_DEPLOY_PACKAGE_VERSION: ${{ inputs.deploy_package_version }}
-        CAKE_RUNNER_VERSION: ${{ inputs.cake_runner_version }}
+        TF_APPS_VERSION: ${{ inputs.tf_apps_version }}
+        MAGE_RUNNER_VERSION: ${{ inputs.mage_runner_version }}
         OCTOPUS_CLI_API_KEY: ${{ env.OCTOPUS_CLI_API_KEY }}
         OCTOPUS_CLI_SERVER: ${{ env.OCTOPUS_CLI_SERVER }}
         DEPLOY_YAML_DIR: ${{ inputs.deploy_yaml_dir }}

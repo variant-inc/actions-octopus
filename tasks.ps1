@@ -1,27 +1,20 @@
-$NugetUser = $env:GITHUB_ACTOR
-$NugetToken = $env:AZ_DEVOPS_PAT
-$CakeRunnerVersion = $env:CAKE_RUNNER_VERSION
-
 $ErrorActionPreference = "Stop"
 $InformationPreference = "Continue"
 $WarningPreference = "SilentlyContinue"
 
-Trap
-{
+Trap {
   Write-Error $_.InvocationInfo.ScriptName -ErrorAction Continue
   $line = "$($_.InvocationInfo.ScriptLineNumber): $($_.InvocationInfo.Line)"
   Write-Error $line -ErrorAction Continue
   Write-Error $_
 }
 
-function CommandAliasFunction
-{
+function CommandAliasFunction {
   Write-Information ""
   Write-Information "$args"
   $cmd, $args = $args
   & "$cmd" $args
-  if ($LASTEXITCODE)
-  {
+  if ($LASTEXITCODE) {
     throw "Exception Occured"
   }
   Write-Information ""
@@ -31,68 +24,63 @@ Set-Alias -Name ce -Value CommandAliasFunction -Scope script
 
 $DeployYamlDir = [System.IO.Path]::GetFullPath($env:DEPLOY_YAML_DIR)
 
-if ((Test-Path -Path $DeployYamlDir) -eq $true)
-{
+if ((Test-Path -Path $DeployYamlDir) -eq $true) {
   $deployYamlsFound = Get-ChildItem `
-    -Path $DeployYamlDir `
-    -Filter "*.*ml" -Recurse `
-  | Where-Object { $_.Name -match ".(yaml|yml)" }
+    -Path "${DeployYamlDir}/*.*" `
+    -Include ('*.yml', '*.yaml')
 }
-else
-{
+else {
   throw "::error::Deploy folder does not exists in $env:DEPLOY_YAML_DIR directory";
 }
 
-if ($deployYamlsFound.Count -gt 0)
-{
+if ($deployYamlsFound.Count -gt 0) {
   New-Item -ItemType Directory -Force -Path "/tmp/$env:GITHUB_REPOSITORY" | Out-Null
   Set-Location "/tmp/$env:GITHUB_REPOSITORY"
   $env:TMP_PATH = "/tmp"
-  $CakeLogLevel = if ($env:CAKE_LOG_LEVEL)
-  {
-    $env:CAKE_LOG_LEVEL
-  }
-  else
-  {
-    "Information"
-  };
-  $SerilogLogLevel = if ($env:SERILOG_LOG_LEVEL)
-  {
-    $env:SERILOG_LOG_LEVEL
-  }
-  else
-  {
-    "Information"
-  };
 
-  dotnet nuget add source --name cake --username "${NugetUser}" --password "${NugetToken}" --store-password-in-clear-text "https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json"
-  dotnet nuget update source cake -u "${NugetUser}" -p "${NugetToken}" --store-password-in-clear-text -s "https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json"
+  dotnet nuget add source --name octopus --username "optional" --password $env:AZ_DEVOPS_PAT --store-password-in-clear-text "https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json"
+  dotnet nuget update source octopus -u "optional" -p $env:AZ_DEVOPS_PAT --store-password-in-clear-text -s "https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json"
   ce dotnet new tool-manifest --force
+  # [pscredential]$cred = New-Object System.Management.Automation.PSCredential ("optional", $(ConvertTo-SecureString $env:AZ_DEVOPS_PAT -AsPlainText -Force))
+  # Register-PackageSource -Name "octopus" -Credential $cred -Location "https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json" -ProviderName "NuGet" -Trusted
 
-  [pscredential]$cred = New-Object System.Management.Automation.PSCredential ($NugetUser, $(ConvertTo-SecureString $NugetToken -AsPlainText -Force))
-  Register-PackageSource -Name "cake" -Credential $cred -Location "https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json" -ProviderName "NuGet" -Trusted
-  if ($env:INPUT_DEPLOY_PACKAGE_VERSION.length -eq 0){
+  if ($env:TF_APPS_VERSION.length -eq 0) {
     $message = dotnet tool install --no-cache terraform-variant-apps
-  } elseif ([regex]::match($env:INPUT_DEPLOY_PACKAGE_VERSION,'[\[\]()]').Success) {
-    $message = $(& dotnet tool install --version "${env:INPUT_DEPLOY_PACKAGE_VERSION}" --no-cache terraform-variant-apps ) 2>&1
-    $env:INPUT_DEPLOY_PACKAGE_VERSION = [regex]::match($message, '\d+\.\d+\.\d+').Groups[0].Value
   }
-  Write-Host "terraform-variant-apps version: $env:INPUT_DEPLOY_PACKAGE_VERSION"
+  elseif ([regex]::match($env:TF_APPS_VERSION, '[\[\]()]').Success) {
+    $message = $(& dotnet tool install --version '[*,1.6)' --no-cache terraform-variant-apps ) 2>&1
+    $env:TF_APPS_VERSION = [regex]::match($message, '\d+\.\d+\.\d+').Groups[0].Value
+  }
+  Write-Host "terraform-variant-apps version: $env:TF_APPS_VERSION"
 
-  if ($CakeRunnerVersion) {
-    ce dotnet tool install --version "${CakeRunnerVersion}" --no-cache Variant.Cake.Runner
-  } else {
-    ce dotnet tool install --no-cache Variant.Cake.Runner
+  if ($env:MAGE_RUNNER_VERSION.length -eq 0) {
+    $message = dotnet tool install --no-cache mage-runner
   }
-  $CakeRunnerVersion = (Get-Content .config/dotnet-tools.json | ConvertFrom-Json).tools."variant.cake.runner".version
-  ce dotnet variant-cake-runner `
-    --target CreateRelease `
-    --cakeRunnerVersion $CakeRunnerVersion `
-    --deployYamlDirPath $DeployYamlDir `
-    --logLevel $CakeLogLevel `
-    --seriloglevel $SerilogLogLevel
+  elseif ([regex]::match($env:MAGE_RUNNER_VERSION, '[\[\]()]').Success) {
+    $message = $(& dotnet tool install --version "${env:MAGE_RUNNER_VERSION}" --no-cache mage-runner ) 2>&1
+    $env:MAGE_RUNNER_VERSION = [regex]::match($message, '\d+\.\d+\.\d+').Groups[0].Value
+  }
+  Write-Host "mage-runner version: $env:MAGE_RUNNER_VERSION"
+
+  nuget sources Add `
+    -Name octopus `
+    -Source https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json `
+    -UserName "github-runner" `
+    -Password $env:AZ_DEVOPS_PAT
+
+  ce nuget install mage-runner `
+    -Source octopus `
+    -OutputDirectory mage `
+    -Version $env:MAGE_RUNNER_VERSION
+
+  Move-Item -Path ./mage/*/mage -Destination ./mage/
+
+  chmod +x ./mage/mage
+
+  $deployYamlsFound | ForEach-Object -Parallel {
+    ./mage/mage octopus:octoPush $($_.FullName)
+  }
 }
-else
-{
+else {
   throw "::error::No Deploy files (.yaml|.yml) files found in .variant folder"
 }
