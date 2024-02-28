@@ -9,18 +9,22 @@ Trap {
   Write-Error $_
 }
 
-function CommandAliasFunction {
-  Write-Information ""
-  Write-Information "$args"
-  $cmd, $args = $args
-  & "$cmd" $args
-  if ($LASTEXITCODE) {
-    throw "Exception Occured"
-  }
-  Write-Information ""
-}
+Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
+Install-Module Native
+Import-Module Native
 
-Set-Alias -Name ce -Value CommandAliasFunction -Scope script
+# function CommandAliasFunction {
+#   Write-Information ""
+#   Write-Information "$args"
+#   $cmd, $args = $args
+#   & "$cmd" $args
+#   if ($LASTEXITCODE) {
+#     throw "Exception Occured"
+#   }
+#   Write-Information ""
+# }
+
+# Set-Alias -Name ce -Value CommandAliasFunction -Scope script
 
 $DeployYamlDir = [System.IO.Path]::GetFullPath($env:DEPLOY_YAML_DIR)
 
@@ -40,7 +44,10 @@ if ($deployYamlsFound.Count -gt 0) {
 
   dotnet nuget add source --name octopus --username "optional" --password $env:AZ_DEVOPS_PAT --store-password-in-clear-text "https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json"
   dotnet nuget update source octopus -u "optional" -p $env:AZ_DEVOPS_PAT --store-password-in-clear-text -s "https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json"
-  ce dotnet new tool-manifest --force
+
+  New-Item -ItemType File -Path ./.config/dotnet-tools.json -Force
+  Copy-Item $env:GITHUB_ACTION_PATH/.config/dotnet-tools.json ./.config/dotnet-tools.json -Force
+  # ce dotnet new tool-manifest --force
   # [pscredential]$cred = New-Object System.Management.Automation.PSCredential ("optional", $(ConvertTo-SecureString $env:AZ_DEVOPS_PAT -AsPlainText -Force))
   # Register-PackageSource -Name "octopus" -Credential $cred -Location "https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json" -ProviderName "NuGet" -Trusted
 
@@ -48,7 +55,7 @@ if ($deployYamlsFound.Count -gt 0) {
     $message = dotnet tool install --no-cache terraform-variant-apps
   }
   elseif ([regex]::match($env:TF_APPS_VERSION, '[\[\]()]').Success) {
-    $message = $(& dotnet tool install --version '[*,1.6)' --no-cache terraform-variant-apps ) 2>&1
+    $message = $(& dotnet tool install --version $env:TF_APPS_VERSION --no-cache terraform-variant-apps ) 2>&1
     $env:TF_APPS_VERSION = [regex]::match($message, '\d+\.\d+\.\d+').Groups[0].Value
   }
   Write-Host "terraform-variant-apps version: $env:TF_APPS_VERSION"
@@ -68,17 +75,16 @@ if ($deployYamlsFound.Count -gt 0) {
     -UserName "github-runner" `
     -Password $env:AZ_DEVOPS_PAT
 
-  ce nuget install mage-runner `
+  ie nuget install mage-runner `
     -Source octopus `
     -OutputDirectory mage `
     -Version $env:MAGE_RUNNER_VERSION
 
   Move-Item -Path ./mage/*/mage -Destination ./mage/
-
   chmod +x ./mage/mage
 
   $deployYamlsFound | ForEach-Object -Parallel {
-    ./mage/mage octopus:octoPush $($_.FullName)
+    ins "./mage/mage octopus:octoPush $($_.FullName)"
   }
 }
 else {
