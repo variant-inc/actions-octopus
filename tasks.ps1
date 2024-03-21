@@ -13,19 +13,6 @@ Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
 Install-Module Native
 Import-Module Native
 
-# function CommandAliasFunction {
-#   Write-Information ""
-#   Write-Information "$args"
-#   $cmd, $args = $args
-#   & "$cmd" $args
-#   if ($LASTEXITCODE) {
-#     throw "Exception Occured"
-#   }
-#   Write-Information ""
-# }
-
-# Set-Alias -Name ce -Value CommandAliasFunction -Scope script
-
 $DeployYamlDir = [System.IO.Path]::GetFullPath($env:DEPLOY_YAML_DIR)
 
 if ((Test-Path -Path $DeployYamlDir) -eq $true) {
@@ -45,11 +32,8 @@ if ($deployYamlsFound.Count -gt 0) {
   dotnet nuget add source --name octopus --username "optional" --password $env:AZ_DEVOPS_PAT --store-password-in-clear-text "https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json"
   dotnet nuget update source octopus -u "optional" -p $env:AZ_DEVOPS_PAT --store-password-in-clear-text -s "https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json"
 
-  New-Item -ItemType File -Path ./.config/dotnet-tools.json -Force
-  Copy-Item $env:GITHUB_ACTION_PATH/.config/dotnet-tools.json ./.config/dotnet-tools.json -Force
-  # ce dotnet new tool-manifest --force
-  # [pscredential]$cred = New-Object System.Management.Automation.PSCredential ("optional", $(ConvertTo-SecureString $env:AZ_DEVOPS_PAT -AsPlainText -Force))
-  # Register-PackageSource -Name "octopus" -Credential $cred -Location "https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json" -ProviderName "NuGet" -Trusted
+  New-Item -ItemType File -Path ./.config/dotnet-tools.json -Force | Out-Null
+  Copy-Item $env:GITHUB_ACTION_PATH/.config/dotnet-tools.json ./.config/dotnet-tools.json -Force | Out-Null
 
   if ($env:TF_APPS_VERSION.length -eq 0) {
     $message = dotnet tool install --no-cache terraform-variant-apps
