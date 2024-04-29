@@ -39,14 +39,16 @@ $deployScriptsPath = [System.IO.Path]::GetFullPath((Join-Path ${env:GITHUB_WORKS
 mkdir -p ./packages/
 
 Write-Output "Packing Octopus Package"
-ce octo pack --id="${PROJECT_NAME}" `
-  --format="Zip" --version="${env:VERSION}" `
-  --basePath="$deployScriptsPath" --outFolder="./packages"
+ce octopus package zip create --id="${PROJECT_NAME}" `
+  --version="${env:VERSION}" `
+  --base-path="$deployScriptsPath" --out-folder="./packages" `
+  --no-prompt
 
 Write-Output "Pushing Octopus Package"
-ce octo push --package="./packages/${PROJECT_NAME}.${env:VERSION}.zip" `
+ce octopus package upload --package="./packages/${PROJECT_NAME}.${env:VERSION}.zip" `
   --space="${SPACE_NAME}" `
-  --overwrite-mode=OverwriteExisting
+  --overwrite-mode="overwrite" `
+  --no-prompt
 
 $commitMessage = git log -1 --pretty=oneline
 $commitMessage = $commitMessage -replace "${env:GITHUB_SHA} ", ""
@@ -72,19 +74,12 @@ $jsonBody = @{
 New-Item "buildinformation.json" -ItemType File -Force
 Set-Content -Path "buildinformation.json" -Value $jsonBody
 
-Write-Output "Pushing Build Information"
-ce octo build-information `
-  --package-id="${PROJECT_NAME}" `
-  --file="buildinformation.json" `
+Write-Output "Creating Octopus Release"
+ce octopus release create `
+  --project="${PROJECT_NAME}" `
+  --package-version="${env:VERSION}" `
   --version="${env:VERSION}" `
   --space="${SPACE_NAME}" `
-  --overwrite-mode=OverwriteExisting
-
-Write-Output "Creating Octopus Release"
-ce octo create-release `
-  --project="${PROJECT_NAME}" `
-  --packageVersion="${env:VERSION}" `
-  --releaseNumber="${env:VERSION}" `
-  --space="${SPACE_NAME}" `
   --channel="$channelName" `
-  --ignoreExisting
+  --ignore-existing `
+  --no-prompt
