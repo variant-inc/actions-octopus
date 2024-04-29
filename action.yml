@@ -36,9 +36,9 @@ runs:
   using: composite
   steps:
     - name: Install Octopus CLI 🐙
-      uses: OctopusDeploy/install-octopus-cli-action@v1.1.10
+      uses: OctopusDeploy/install-octopus-cli-action@v3
       with:
-        version: 9.1.7
+        version: '*'
     - name: Setup Octopus Project & Release
       shell: pwsh
       run: ${{ github.action_path }}/start.ps1
