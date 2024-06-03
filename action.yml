@@ -53,6 +53,11 @@ inputs:
       This is the place where the YAML files for DX are located.
     required: false
     default: .variant/deploy
+env:
+  YAMLS: $(find ${{ inputs.deploy_yaml_dir }} -type f -printf '%f\n')
+strategy:
+  matrix:
+    yaml: ${{ split(env.YAMLS, '\n') }}
 runs:
   using: composite
   steps:
@@ -65,6 +70,20 @@ runs:
           echo "INPUT_DEFAULT_BRANCH=$GitVersion_BranchName" >>"$GITHUB_ENV"
         fi
         echo "$HOME/.local/bin" >> $GITHUB_PATH
+    - name: Add Build Information for Package
+      env:
+        OCTOPUS_URL: ${{ env.OCTOPUS_CLI_SERVER }}
+        OCTOPUS_API_KEY: ${{ env.OCTOPUS_CLI_API_KEY }}
+        OCTOPUS_SPACE: $(yq eval .octopus.space ${{ matrix.yaml }} )
+        PACKAGE_NAME: $(yq eval .octopus.space ${{ matrix.yaml }} )
+      uses: OctopusDeploy/push-build-information-action@v3
+      with:
+        packages: |
+          ${{ PACKAGE_NAME }}
+        version: ${{ env:VERSION }}
+        overwrite_mode: OverwriteExisting
+        branch: ${{ env.GitVersion_BranchName }}
+        space: ${{ OCTOPUS_SPACE }}
     - name: Setup Octopus Project & Release
       shell: pwsh
       run: ${{ github.action_path }}/tasks.ps1
