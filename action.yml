@@ -57,7 +57,7 @@ env:
   YAMLS: $(find $inputs.deploy_yaml_dir -type f -printf '%f\n')
 strategy:
   matrix:
-    yaml: ${{ split(env.YAMLS, '\n') }}
+    yaml: ${{ env.YAMLS }}
 runs:
   using: composite
   steps:
