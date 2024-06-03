@@ -53,11 +53,10 @@ inputs:
       This is the place where the YAML files for DX are located.
     required: false
     default: .variant/deploy
-env:
-  YAMLS: $(find $inputs.deploy_yaml_dir -type f -printf '%f\n')
+
 strategy:
   matrix:
-    yaml: ${{ env.YAMLS }}
+    yaml: $(find $inputs.deploy_yaml_dir -type f -printf '%f\n')
 runs:
   using: composite
   steps:
