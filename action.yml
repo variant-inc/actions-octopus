@@ -70,16 +70,15 @@ runs:
         fi
         echo "$HOME/.local/bin" >> $GITHUB_PATH
         echo ${{ matrix.yaml }}
+        OCTOPUS_SPACE=$(yq eval '.octopus.space' ${{ matrix.yaml }})
+        PACKAGE_NAME=$(yq eval '.octopus.packageName' ${{ matrix.yaml }})
+        echo "OCTOPUS_SPACE=$OCTOPUS_SPACE" >> $GITHUB_ENV
+        echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
 
     - name: Add Build Information for Package
       env:
         OCTOPUS_URL: ${{ env.OCTOPUS_CLI_SERVER }}
         OCTOPUS_API_KEY: ${{ env.OCTOPUS_CLI_API_KEY }}
-      run: |
-        OCTOPUS_SPACE=$(yq eval '.octopus.space' ${{ matrix.yaml }})
-        PACKAGE_NAME=$(yq eval '.octopus.packageName' ${{ matrix.yaml }})
-        echo "OCTOPUS_SPACE=$OCTOPUS_SPACE" >> $GITHUB_ENV
-        echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
       uses: OctopusDeploy/push-build-information-action@v3
       with:
         packages: |
