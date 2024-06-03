@@ -73,13 +73,13 @@ runs:
       env:
         OCTOPUS_URL: ${{ env.OCTOPUS_CLI_SERVER }}
         OCTOPUS_API_KEY: ${{ env.OCTOPUS_CLI_API_KEY }}
-        OCTOPUS_SPACE: $(yq eval .octopus.space ${{ matrix.yaml }} )
-        PACKAGE_NAME: $(yq eval .octopus.space ${{ matrix.yaml }} )
+        OCTOPUS_SPACE: $(yq eval .octopus.space $matrix.yaml )
+        PACKAGE_NAME: $(yq eval .octopus.space $matrix.yaml )
       uses: OctopusDeploy/push-build-information-action@v3
       with:
         packages: |
           ${{ env.PACKAGE_NAME }}
-        version: ${{ env.VERSION }}
+        version: ${{ env.GitVersion_NuGetVersionV2 }}
         overwrite_mode: OverwriteExisting
         branch: ${{ env.GitVersion_BranchName }}
         space: ${{ env.OCTOPUS_SPACE }}
