@@ -35,19 +35,13 @@ if ($deployYamlsFound.Count -gt 0) {
   New-Item -ItemType File -Path ./.config/dotnet-tools.json -Force | Out-Null
   Copy-Item $env:GITHUB_ACTION_PATH/.config/dotnet-tools.json ./.config/dotnet-tools.json -Force | Out-Null
 
-  if ($env:TF_APPS_VERSION.length -eq 0) {
-    $message = dotnet tool install --no-cache terraform-variant-apps
-  }
-  elseif ([regex]::match($env:TF_APPS_VERSION, '[\[\]()]').Success) {
+  if ([regex]::match($env:TF_APPS_VERSION, '[\[\]()]').Success) {
     $message = $(& dotnet tool install --version $env:TF_APPS_VERSION --no-cache terraform-variant-apps ) 2>&1
     $env:TF_APPS_VERSION = [regex]::match($message, '\d+\.\d+\.\d+').Groups[0].Value
   }
   Write-Host "terraform-variant-apps version: $env:TF_APPS_VERSION"
 
-  if ($env:MAGE_RUNNER_VERSION.length -eq 0) {
-    $message = dotnet tool install --no-cache mage-runner
-  }
-  elseif ([regex]::match($env:MAGE_RUNNER_VERSION, '[\[\]()]').Success) {
+  if ([regex]::match($env:MAGE_RUNNER_VERSION, '[\[\]()]').Success) {
     $message = $(& dotnet tool install --version "${env:MAGE_RUNNER_VERSION}" --no-cache mage-runner ) 2>&1
     $env:MAGE_RUNNER_VERSION = [regex]::match($message, '\d+\.\d+\.\d+').Groups[0].Value
   }
@@ -68,7 +62,7 @@ if ($deployYamlsFound.Count -gt 0) {
   chmod +x ./mage/mage
 
   $deployYamlsFound | ForEach-Object -Parallel {
-    ins "./mage/mage octopus:octoPush $($_.FullName)"
+    ins "./mage/mage octopus:octoPush $($_.FullName)" -ErrorOnFailure
   }
 }
 else {
