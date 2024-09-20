@@ -1,0 +1,39 @@
+{
+    "PackageRequirement": "LetOctopusDecide",
+    "Properties": {
+      "Octopus.Action.TargetRoles": ""
+    },
+    "Condition": "Success",
+    "StartTrigger": "StartAfterPrevious",
+    "Actions": [
+      {
+        "ActionType": "Octopus.Script",
+        "IsDisabled": false,
+        "CanBeUsedForProjectVersioning": true,
+        "WorkerPoolVariable": "WORKER_POOL",
+        "Environments": [],
+        "ExcludedEnvironments": [],
+        "Channels": [],
+        "Packages": [
+          {
+            "Name": "",
+            "PackageId": "#{Octopus.Project.Name}",
+            "FeedId": "Feeds-ID",
+            "AcquisitionLocation": "Server",
+            "Properties": {
+              "SelectionMode": "immediate"
+            }
+          }
+        ],
+        "Condition": "Success",
+        "Properties": {
+          "Octopus.Action.RunOnServer": "true",
+          "Octopus.Action.EnabledFeatures": "Octopus.Features.JsonConfigurationVariables,Octopus.Features.SubstituteInFiles",
+          "Octopus.Action.Script.ScriptSource": "Package",
+          "Octopus.Action.Package.PackageId": "#{Octopus.Project.Name}",
+          "Octopus.Action.Package.FeedId": "Feeds-ID",
+          "Octopus.Action.Package.DownloadOnTentacle": "False"
+        }
+      }
+    ]
+  }
