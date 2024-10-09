@@ -3,20 +3,17 @@ param (
     [string]$ProjectName
 )
 
-# Function to run Octopus CLI commands and handle errors
 function Invoke-OctopusCliCommand {
     param (
         [string[]]$Command
     )
     $result = & $Command 2>&1
     if ($LASTEXITCODE -ne 0) {
-        Write-Error "Octopus CLI command failed: $result"
         throw "Octopus CLI command failed: $result"
     }
     return $result
 }
 
-# Function to get the space ID from the space name
 function Get-SpaceIdFromName {
     param (
         [string]$SpaceName
@@ -31,69 +28,92 @@ function Get-SpaceIdFromName {
     return $space.Id
 }
 
-# Function to get or create a project
 function Get-OrCreateProject {
     param (
         [string]$SpaceId,
         [string]$ProjectName
     )
 
+    # List the projects in the specified space
     $command = @("octopus", "project", "list", "--space", $SpaceId, "--outputFormat", "json")
     $projectsOutput = Invoke-OctopusCliCommand -Command $command
     $projects = $projectsOutput | ConvertFrom-Json
     $project = $projects | Where-Object { $_.Name -eq $ProjectName }
 
     if (-not $project) {
-        Write-Output "Project not found, creating project"
+        Write-Output "Project '$ProjectName' not found, creating a new one by cloning the default project."
+
+        # Determine if default or "Default Project" exists
+        $defaultProject = $projects | Where-Object { $_.Name -eq "default" -or $_.Name -eq "Default Project" }
+        if (-not $defaultProject) {
+            throw "Default project not found in space '$SpaceId'."
+        }
+
+        # Get the default project group and lifecycle IDs
         $defaultProjectGroupId = Get-DefaultProjectGroupId -SpaceId $SpaceId
         $releaseLifecycleId = Get-ReleaseLifecycleId -SpaceId $SpaceId
+
+        # Clone the default project
         $command = @(
-            "octopus", "project", "create",
-            "--name", $ProjectName,
+            "octopus", "project", "clone",
             "--space", $SpaceId,
+            "--name", $ProjectName,
+            "--sourceProjectId", $defaultProject.Id,
             "--projectGroup", $defaultProjectGroupId,
             "--lifecycle", $releaseLifecycleId,
             "--outputFormat", "json"
         )
         $projectOutput = Invoke-OctopusCliCommand -Command $command
         $project = $projectOutput | ConvertFrom-Json
+
+        # Enable the newly created project
+        Write-Output "Enabling the project '$ProjectName'."
+        $command = @(
+            "octopus", "project", "update",
+            "--space", $SpaceId,
+            "--id", $project.Id,
+            "--isDisabled", "false",
+            "--outputFormat", "json"
+        )
+        Invoke-OctopusCliCommand -Command $command
     }
 
     return $project
 }
 
-# Function to get default project group ID
 function Get-DefaultProjectGroupId {
     param (
         [string]$SpaceId
     )
+    # Get the default project group ID
     $command = @("octopus", "project-group", "list", "--space", $SpaceId, "--outputFormat", "json")
     $groupsOutput = Invoke-OctopusCliCommand -Command $command
     $groups = $groupsOutput | ConvertFrom-Json
     $defaultGroup = $groups | Where-Object { $_.Name -eq "Default Project Group" }
+    if (-not $defaultGroup) {
+        throw "Default Project Group not found in space '$SpaceId'."
+    }
     return $defaultGroup.Id
 }
 
-# Function to get release lifecycle ID
 function Get-ReleaseLifecycleId {
     param (
         [string]$SpaceId
     )
+    # Get the release lifecycle ID
     $command = @("octopus", "lifecycle", "list", "--space", $SpaceId, "--outputFormat", "json")
     $lifecyclesOutput = Invoke-OctopusCliCommand -Command $command
     $lifecycles = $lifecyclesOutput | ConvertFrom-Json
     $releaseLifecycle = $lifecycles | Where-Object { $_.Name -eq "release" }
+    if (-not $releaseLifecycle) {
+        throw "Release lifecycle not found in space '$SpaceId'."
+    }
     return $releaseLifecycle.Id
 }
 
-# Function to get built-in feed ID
-function Get-BuiltInFeedId {
-    param (
-        [string]$SpaceId
-    )
-    $command = @("octopus", "feed", "list", "--space", $SpaceId, "--outputFormat", "json")
-    $feedsOutput = Invoke-OctopusCliCommand -Command $command
-    $feeds = $feedsOutput | ConvertFrom-Json
-    $builtInFeed = $feeds | Where-Object { $_.FeedType -eq "BuiltIn" }
-    return $builtInFeed.Id
-}
+# Main Execution
+$SpaceId = Get-SpaceIdFromName -SpaceName $SpaceName
+$Project = Get-OrCreateProject -SpaceId $SpaceId -ProjectName $ProjectName
+
+Write-Output "Project '$ProjectName' in space '$SpaceName' has been successfully created or updated."
+Write-Output $Project

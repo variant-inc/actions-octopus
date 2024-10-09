@@ -1,20 +1,16 @@
-Write-Output "=== Gathering Space and Project Information ==="
+Write-Output "Gathering Space/Project from workflow input"
 
-# Retrieve environment variables for Space and Project names
 $SPACE_NAME = $env:SPACE_NAME
 $PROJECT_NAME = $env:PROJECT_NAME
 
-Write-Output "Space Name: $SPACE_NAME"
-Write-Output "Project Name: $PROJECT_NAME"
-
-# Check if Space Name is provided
-if (($null -eq $SPACE_NAME) -or ("" -eq $SPACE_NAME)) {
-    throw "Error: Space Name not provided. Please set the SPACE_NAME environment variable."
+if (($null -eq $SPACE_NAME) -or ("" -eq $SPACE_NAME))
+{
+  throw "Space Name not provided"
 }
 
-# Check if Project Name is provided
-if (($null -eq $PROJECT_NAME) -or ("" -eq $PROJECT_NAME)) {
-    throw "Error: Project Name not provided. Please set the PROJECT_NAME environment variable."
+if (($null -eq $PROJECT_NAME) -or ("" -eq $PROJECT_NAME))
+{
+  throw "Project Name not provided"
 }
 
 # Check if project.ps1 exists
@@ -42,7 +38,7 @@ $projectOutput = & $projectScriptPath @scriptParams
 
 # Check if the script executed successfully
 if ($LASTEXITCODE -ne 0) {
-    throw "Error: project.ps1 script execution failed. Check the script for errors."
+    throw "Error: project.ps1 script execution failed."
 }
 
 # Output the result from project.ps1
