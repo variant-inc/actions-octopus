@@ -32,6 +32,11 @@ inputs:
       Regex of the branches that has to deployed to dev.
     required: false
     default: .*
+  release_channels:
+    description: >
+      Comma separated list of Octopus release channels.
+    required: false
+    default: release
 runs:
   using: composite
   steps:
@@ -67,6 +72,7 @@ runs:
         VERSION: ${{ inputs.version }}
         SPACE_NAME: ${{ inputs.space_name }}
         FEATURE_CHANNEL_BRANCHES: ${{ inputs.feature_channel_branches }}
+        RELEASE_CHANNELS: ${{ inputs.release_channels }}
         ACTION_PATH: ${{ github.action_path }}
     - name: Create Release Action
       uses: variant-inc/actions-collection/create-release-tag@v2

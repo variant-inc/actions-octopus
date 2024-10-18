@@ -1,6 +1,7 @@
 Write-Output "Gathering Space/Project from workflow input"
 $SPACE_NAME = $env:SPACE_NAME
 $PROJECT_NAME = $env:PROJECT_NAME
+$RELEASE_CHANNELS = $env:RELEASE_CHANNELS
 
 if (($null -eq $SPACE_NAME) -or ("" -eq $SPACE_NAME))
 {
@@ -14,11 +15,11 @@ if (($null -eq $PROJECT_NAME) -or ("" -eq $PROJECT_NAME))
 
 if (${env:GitVersion_BranchName} -eq "${env:DEFAULT_BRANCH}")
 {
-  $channelName = "release"
+  $releaseChannels = $RELEASE_CHANNELS
 }
 elseif (${env:GitVersion_BranchName} -match "${env:FEATURE_CHANNEL_BRANCHES}")
 {
-  $channelName = "feature"
+  $releaseChannels = "feature"
 }
 else
 {
@@ -45,12 +46,14 @@ $commitMessage = git log -1 --pretty=oneline
 $commitMessage = $commitMessage -replace "${env:GITHUB_SHA} ", ""
 Write-Information "Commit Message: $commitMessage"
 
-Write-Output "Creating Octopus Release"
-ce octopus release create `
-  --project="${PROJECT_NAME}" `
-  --package-version="${env:VERSION}" `
-  --version="${env:VERSION}" `
-  --space="${SPACE_NAME}" `
-  --channel="$channelName" `
-  --ignore-existing `
-  --no-prompt
+foreach ($channel in $releaseChannels) {
+  Write-Output "Creating Octopus Release in channel: $channel"
+  ce octopus release create `
+    --project="${PROJECT_NAME}" `
+    --package-version="${env:VERSION}" `
+    --version="${env:VERSION}" `
+    --space="${SPACE_NAME}" `
+    --channel="$channel" `
+    --ignore-existing `
+    --no-prompt
+}
