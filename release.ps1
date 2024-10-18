@@ -15,7 +15,7 @@ if (($null -eq $PROJECT_NAME) -or ("" -eq $PROJECT_NAME))
 
 if (${env:GitVersion_BranchName} -eq "${env:DEFAULT_BRANCH}")
 {
-  $releaseChannels = $RELEASE_CHANNELS
+  $releaseChannels = $RELEASE_CHANNELS.Split(',')
 }
 elseif (${env:GitVersion_BranchName} -match "${env:FEATURE_CHANNEL_BRANCHES}")
 {
@@ -25,7 +25,8 @@ else
 {
   exit 0;
 }
-
+# Simulate commit to default branch
+$releaseChannels = $RELEASE_CHANNELS.Split(',')
 $deployScriptsPath = [System.IO.Path]::GetFullPath((Join-Path ${env:GITHUB_WORKSPACE} ${env:DEPLOY_SCRIPTS_PATH}))
 
 mkdir -p ./packages/
