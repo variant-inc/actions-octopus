@@ -48,11 +48,12 @@ $commitMessage = $commitMessage -replace "${env:GITHUB_SHA} ", ""
 Write-Information "Commit Message: $commitMessage"
 
 foreach ($channel in $releaseChannels) {
+  $version = "$env:VERSION-$channel"
   Write-Output "Creating Octopus Release in channel: $channel"
   ce octopus release create `
     --project="${PROJECT_NAME}" `
     --package-version="${env:VERSION}" `
-    --version="${env:VERSION}" `
+    --version="$version" `
     --space="${SPACE_NAME}" `
     --channel="$channel" `
     --ignore-existing `
