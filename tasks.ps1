@@ -62,12 +62,18 @@ if ($deployYamlsFound.Count -gt 0) {
   #   -Source octopus `
   #   -OutputDirectory mage `
   #   -Version $env:MAGE_RUNNER_VERSION
-  dotnet tool install mage-runner `
-  --add-source octopus `
-  --tool-path mage `
-  --version $env:MAGE_RUNNER_VERSION
+  # dotnet tool install mage-runner `
+  # --add-source octopus `
+  # --tool-path mage `
+  # --version $env:MAGE_RUNNER_VERSION
 
-  Move-Item -Path ./mage/*/mage -Destination ./mage/
+  $env:PACKAGE_BASE_ADDRESS=$(curl -u "optional:$env:AZ_DEVOPS_PAT" -L https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json | jq -r '.resources[] | select(.["@type"] | test("PackageBaseAddress/.*")) | .["@id”]’)
+
+  mkdir -p mage && curl -u "optional:$env:AZ_DEVOPS_PAT" -Lo "mage/mage-runner.$env:MAGE_RUNNER_VERSION.nupkg" "$env:PACKAGE_BASE_ADDRESS/mage-runner/1.2.0/mage-runner.1.2.0.nupkg"
+
+  Expand-Archive -Path "mage/mage-runner.$env:MAGE_RUNNER_VERSION.nupkg" -DestinationPath "mage"
+
+  # Move-Item -Path ./mage/*/mage -Destination ./mage/
   chmod +x ./mage/mage
 
   $deployYamlsFound | ForEach-Object -Parallel {
