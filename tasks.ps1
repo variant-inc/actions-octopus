@@ -47,16 +47,25 @@ if ($deployYamlsFound.Count -gt 0) {
   }
   Write-Host "mage-runner version: $env:MAGE_RUNNER_VERSION"
 
-  nuget sources Add `
-    -Name octopus `
-    -Source https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json `
-    -UserName "github-runner" `
-    -Password $env:AZ_DEVOPS_PAT
+  # nuget sources Add `
+  #   -Name octopus `
+  #   -Source https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json `
+  #   -UserName "github-runner" `
+  #   -Password $env:AZ_DEVOPS_PAT
+  
+  dotnet nuget add source "https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json" `
+  --name octopus `
+  --username "optional" `
+  --password $env:AZ_DEVOPS_PAT --store-password-in-clear-text `
 
-  ie nuget install mage-runner `
-    -Source octopus `
-    -OutputDirectory mage `
-    -Version $env:MAGE_RUNNER_VERSION
+  # ie nuget install mage-runner `
+  #   -Source octopus `
+  #   -OutputDirectory mage `
+  #   -Version $env:MAGE_RUNNER_VERSION
+  dotnet tool install mage-runner`
+  --add-source octopus `
+  --tool-path mage `
+  --version $env:MAGE_RUNNER_VERSION
 
   Move-Item -Path ./mage/*/mage -Destination ./mage/
   chmod +x ./mage/mage
