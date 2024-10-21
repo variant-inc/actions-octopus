@@ -52,7 +52,7 @@ if ($deployYamlsFound.Count -gt 0) {
   #   -Source https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json `
   #   -UserName "github-runner" `
   #   -Password $env:AZ_DEVOPS_PAT
-  
+
   dotnet nuget add source "https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json" `
   --name octopus `
   --username "optional" `
@@ -62,7 +62,7 @@ if ($deployYamlsFound.Count -gt 0) {
   #   -Source octopus `
   #   -OutputDirectory mage `
   #   -Version $env:MAGE_RUNNER_VERSION
-  dotnet tool install mage-runner`
+  dotnet tool install mage-runner `
   --add-source octopus `
   --tool-path mage `
   --version $env:MAGE_RUNNER_VERSION
