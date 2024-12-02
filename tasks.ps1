@@ -46,7 +46,7 @@ if ($deployYamlsFound.Count -gt 0) {
     $env:MAGE_RUNNER_VERSION = [regex]::match($message, '\d+\.\d+\.\d+').Groups[0].Value
   }
   Write-Host "mage-runner version: $env:MAGE_RUNNER_VERSION"
-  
+
   # Fetch mage-runner version from S3
   $S3Bucket = "mage-runner"
   if ($env:GitVersion_BranchName -eq "master" -or $env:GitVersion_BranchName -eq "main") {
