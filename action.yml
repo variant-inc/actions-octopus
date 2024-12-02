@@ -46,7 +46,7 @@ inputs:
       mage-runner package version
       Defaults to latest release version. Can be overriden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).
     required: false
-    default: '[*,1.5)'
+    default: '[*,1.6)'
   deploy_yaml_dir:
     description: |
       Defaults to `.variant/deploy` for backwards compatibility.
@@ -77,6 +77,13 @@ runs:
           echo "INPUT_DEFAULT_BRANCH=$GitVersion_BranchName" >>"$GITHUB_ENV"
         fi
         echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::064859874041:role/ops-github-runner
+        aws-region: us-east-2
+
     - name: Setup Octopus Project & Release
       shell: pwsh
       run: ${{ github.action_path }}/tasks.ps1
