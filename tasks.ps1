@@ -47,7 +47,6 @@ if ($deployYamlsFound.Count -gt 0) {
   }
   Write-Host "mage-runner version: $env:MAGE_RUNNER_VERSION"
 
-  # Fetch mage-runner version from S3
   $S3Bucket = "mage-runner"
   if ($env:GitVersion_BranchName -eq "master" -or $env:GitVersion_BranchName -eq "main") {
       $BranchType = "stable"
@@ -55,7 +54,7 @@ if ($deployYamlsFound.Count -gt 0) {
       $BranchType = "pre-release"
   }
 
-  $S3Key = "$BranchType/mage.$env:MAGE_RUNNER_VERSION"
+  $S3Key = "$BranchType/build/mage.$env:MAGE_RUNNER_VERSION"
   $LocalFilePath = "./mage.$env:MAGE_RUNNER_VERSION"
 
   Write-Host "Fetching $S3Key from s3://$S3Bucket/"
@@ -68,6 +67,7 @@ if ($deployYamlsFound.Count -gt 0) {
   } else {
       Write-Error "Failed to fetch $S3Key from S3."
   }
+
 
   nuget sources Add `
     -Name octopus `
