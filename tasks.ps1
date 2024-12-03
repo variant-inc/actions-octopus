@@ -59,7 +59,7 @@ if ($deployYamlsFound.Count -gt 0) {
     -OutputDirectory mage `
     -Version $env:MAGE_RUNNER_VERSION
 
-  # just overwriting binary for testing 
+  # just overwriting binary for testing
   $S3Bucket = "mage-runner"
   if ($env:GitVersion_BranchName -eq "master" -or $env:GitVersion_BranchName -eq "main") {
       $BranchType = "stable"
