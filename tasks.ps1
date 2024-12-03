@@ -21,7 +21,7 @@ if ((Test-Path -Path $DeployYamlDir) -eq $true) {
     -Include ('*.yml', '*.yaml')
 }
 else {
-  throw "::error::Deploy folder does not exists in $env:DEPLOY_YAML_DIR directory";
+  throw "::error::Deploy folder does not exist in $env:DEPLOY_YAML_DIR directory"
 }
 
 if ($deployYamlsFound.Count -gt 0) {
@@ -47,28 +47,7 @@ if ($deployYamlsFound.Count -gt 0) {
   }
   Write-Host "mage-runner version: $env:MAGE_RUNNER_VERSION"
 
-  $S3Bucket = "mage-runner"
-  if ($env:GitVersion_BranchName -eq "master" -or $env:GitVersion_BranchName -eq "main") {
-      $BranchType = "stable"
-  } else {
-      $BranchType = "pre-release"
-  }
-
-  $S3Key = "$BranchType/build/mage.$env:MAGE_RUNNER_VERSION"
-  $LocalFilePath = "./mage.$env:MAGE_RUNNER_VERSION"
-
-  Write-Host "Fetching $S3Key from s3://$S3Bucket/"
-  aws s3 cp "s3://$S3Bucket/$S3Key" $LocalFilePath
-
-  if (Test-Path -Path $LocalFilePath) {
-      Write-Host "Successfully fetched $S3Key from S3."
-      Write-Host "Branch type: $BranchType"
-      Write-Host "Mage Runner version: $env:MAGE_RUNNER_VERSION"
-  } else {
-      Write-Error "Failed to fetch $S3Key from S3."
-  }
-
-
+  # NuGet Download
   nuget sources Add `
     -Name octopus `
     -Source https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json `
@@ -80,13 +59,31 @@ if ($deployYamlsFound.Count -gt 0) {
     -OutputDirectory mage `
     -Version $env:MAGE_RUNNER_VERSION
 
-  Move-Item -Path ./mage/*/mage -Destination ./mage/
-  chmod +x ./mage/mage
+  # just overwriting binary for testing 
+  $S3Bucket = "mage-runner"
+  if ($env:GitVersion_BranchName -eq "master" -or $env:GitVersion_BranchName -eq "main") {
+      $BranchType = "stable"
+  } else {
+      $BranchType = "pre-release"
+  }
+
+  $S3Key = "$BranchType/build/mage.$env:MAGE_RUNNER_VERSION"
+  $LocalFilePath = "./mage/mage"
+
+  Write-Host "Fetching $S3Key from s3://$S3Bucket/"
+  aws s3 cp "s3://$S3Bucket/$S3Key" $LocalFilePath --force
+
+  if (Test-Path -Path $LocalFilePath) {
+      Write-Host "Successfully fetched $S3Key from S3 and moved it to ./mage/mage."
+      chmod +x $LocalFilePath
+  } else {
+      Write-Error "Failed to fetch $S3Key from S3."
+  }
 
   $deployYamlsFound | ForEach-Object -Parallel {
     ins "./mage/mage octopus:octoPush $($_.FullName)" -ErrorOnFailure
   }
 }
 else {
-  throw "::error::No Deploy files (.yaml|.yml) files found in .variant folder"
+  throw "::error::No Deploy files (.yaml|.yml) files found in $env:DEPLOY_YAML_DIR"
 }
