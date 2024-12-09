@@ -67,17 +67,18 @@ if ($deployYamlsFound.Count -gt 0) {
       $BranchType = "pre-release"
   }
 
-  $S3Key = "$BranchType/build/mage.$env:MAGE_RUNNER_VERSION"
-  $LocalFilePath = "./mage/mage"
+  $S3Key = "$BranchType/mage-runner.$env:MAGE_RUNNER_VERSION.zip"
+  $ZipFilePath = "./mage/mage.zip"
 
   Write-Host "Fetching $S3Key from s3://$S3Bucket/"
-  aws s3 cp "s3://$S3Bucket/$S3Key" $LocalFilePath --force
+  aws s3 cp "s3://$S3Bucket/$S3Key" $ZipFilePath --force
 
-  if (Test-Path -Path $LocalFilePath) {
-      Write-Host "Successfully fetched $S3Key from S3 and moved it to ./mage/mage."
-      chmod +x $LocalFilePath
+  if (Test-Path -Path $ZipFilePath) {
+    Write-Host "Successfully fetched $ZipFilePath. Extracting..."
+    Expand-Archive -Path $ZipFilePath -DestinationPath "./mage" -Force
+    chmod +x ./mage/mage
   } else {
-      Write-Error "Failed to fetch $S3Key from S3."
+    Write-Error "Failed to fetch $S3Key from S3."
   }
 
   $deployYamlsFound | ForEach-Object -Parallel {
