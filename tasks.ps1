@@ -48,10 +48,10 @@ if ($deployYamlsFound.Count -gt 0) {
   Write-Host "mage-runner version: $env:MAGE_RUNNER_VERSION"
 
   nuget sources Add `
-  -Name octopus `
-  -Source https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json `
-  -UserName "github-runner" `
-  -Password $env:AZ_DEVOPS_PAT
+    -Name octopus `
+    -Source https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json `
+    -UserName "github-runner" `
+    -Password $env:AZ_DEVOPS_PAT
 
   ie nuget install mage-runner `
     -Source octopus `
@@ -70,6 +70,11 @@ if ($deployYamlsFound.Count -gt 0) {
 
   Write-Host "Fetching $S3Key from s3://$S3Bucket/"
   aws s3 cp "s3://$S3Bucket/$S3Key" $ZipFilePath --force
+
+  if ($LASTEXITCODE -ne 0) {
+    Write-Error "Failed to fetch $S3Key from S3. AWS CLI returned exit code $LASTEXITCODE."
+    exit $LASTEXITCODE
+  }
 
   if (Test-Path -Path $ZipFilePath) {
     Write-Host "Successfully fetched $ZipFilePath. Extracting..."
