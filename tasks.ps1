@@ -21,7 +21,7 @@ if ((Test-Path -Path $DeployYamlDir) -eq $true) {
     -Include ('*.yml', '*.yaml')
 }
 else {
-  throw "::error::Deploy folder does not exists in $env:DEPLOY_YAML_DIR directory";
+  throw "::error::Deploy folder does not exist in $env:DEPLOY_YAML_DIR directory"
 }
 
 if ($deployYamlsFound.Count -gt 0) {
@@ -58,13 +58,36 @@ if ($deployYamlsFound.Count -gt 0) {
     -OutputDirectory mage `
     -Version $env:MAGE_RUNNER_VERSION
 
-  Move-Item -Path ./mage/*/mage -Destination ./mage/
-  chmod +x ./mage/mage
+  $S3Bucket = $env:MAGE_S3_BUCKET
+  if ($env:GitVersion_BranchName -eq "master" -or $env:GitVersion_BranchName -eq "main") {
+      $BranchType = "stable"
+  } else {
+      $BranchType = "pre-release"
+  }
+
+  $S3Key = "$BranchType/mage-runner.$env:MAGE_RUNNER_VERSION.zip"
+  $ZipFilePath = "./mage/mage.zip"
+
+  Write-Host "Fetching $S3Key from s3://$S3Bucket/"
+  aws s3 cp "s3://$S3Bucket/$S3Key" $ZipFilePath --force
+
+  if ($LASTEXITCODE -ne 0) {
+    Write-Error "Failed to fetch $S3Key from S3. AWS CLI returned exit code $LASTEXITCODE."
+    exit $LASTEXITCODE
+  }
+
+  if (Test-Path -Path $ZipFilePath) {
+    Write-Host "Successfully fetched $ZipFilePath. Extracting..."
+    Expand-Archive -Path $ZipFilePath -DestinationPath "./mage" -Force
+    chmod +x ./mage/mage
+  } else {
+    Write-Error "Failed to fetch $S3Key from S3."
+  }
 
   $deployYamlsFound | ForEach-Object -Parallel {
     ins "./mage/mage octopus:octoPush $($_.FullName)" -ErrorOnFailure
   }
 }
 else {
-  throw "::error::No Deploy files (.yaml|.yml) files found in .variant folder"
+  throw "::error::No Deploy files (.yaml|.yml) files found in $env:DEPLOY_YAML_DIR"
 }
