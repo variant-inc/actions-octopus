@@ -10,7 +10,7 @@ jobs:
     name: pre-commit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install pre-commit dependencies
         run: |
           # Action Docs - https://github.com/npalm/action-docs
@@ -24,5 +24,7 @@ jobs:
           curl -sfSLo ./shfmt "https://github.com/mvdan/sh/releases/download/$SHFFMT_VERSION/shfmt_${SHFFMT_VERSION}_$(uname)_amd64"
           chmod +x shfmt
           mv shfmt $HOME/.local/bin/
-      - uses: actions/setup-python@v3
-      - uses: pre-commit/action@v3.0.0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+      - uses: pre-commit/action@main

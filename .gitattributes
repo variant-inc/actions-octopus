@@ -60,7 +60,7 @@
 *.toml     text
 *.xml      text
 *.yaml     text eol=lf
-*.yml      text
+*.yml      text eol=lf
 
 # Archives
 *.7z       binary

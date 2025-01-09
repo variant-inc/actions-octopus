@@ -41,9 +41,25 @@ ce octopus package upload --package="./packages/${PROJECT_NAME}.${env:VERSION}.z
   --overwrite-mode="overwrite" `
   --no-prompt
 
-$commitMessage = git log -1 --pretty=oneline
-$commitMessage = $commitMessage -replace "${env:GITHUB_SHA} ", ""
-Write-Information "Commit Message: $commitMessage"
+$releaseNotes = ""
+$events = Get-Content $env:GITHUB_EVENT_PATH | ConvertFrom-Json
+if ($null -ne $events.commits) {
+  $events.commits | ForEach-Object {
+    $releaseNotes += @"
+____________________
+#### [commit $($_.id)](https://github.com/$GITHUB_REPOSITORY/commit/$($_.id))
+
+**Author:** $($_.author.name) - $($_.author.name) <$($_.author.email)>
+
+**Committer:** $($_.committer.name) - $($_.committer.name) <$($_.committer.email)>
+
+**Date:**   $($_.timestamp)
+
+<br/>`+"\n``````"+`text
+$($_.message)`+"\n``````\n<br/>"
+"@
+  }
+}
 
 Write-Output "Creating Octopus Release"
 ce octopus release create `
@@ -53,4 +69,5 @@ ce octopus release create `
   --space="${SPACE_NAME}" `
   --channel="$channelName" `
   --ignore-existing `
-  --no-prompt
+  --no-prompt `
+  --release-notes $releaseNotes
