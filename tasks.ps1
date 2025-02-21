@@ -21,7 +21,7 @@ if ((Test-Path -Path $DeployYamlDir) -eq $true) {
     -Include ('*.yml', '*.yaml')
 }
 else {
-  throw "::error::Deploy folder does not exists in $env:DEPLOY_YAML_DIR directory";
+  throw "::error::Deploy folder does not exist in $env:DEPLOY_YAML_DIR directory"
 }
 
 if ($deployYamlsFound.Count -gt 0) {
@@ -45,6 +45,9 @@ if ($deployYamlsFound.Count -gt 0) {
     $message = $(& dotnet tool install --version "${env:MAGE_RUNNER_VERSION}" --no-cache mage-runner ) 2>&1
     $env:MAGE_RUNNER_VERSION = [regex]::match($message, '\d+\.\d+\.\d+').Groups[0].Value
   }
+  else{
+    $env:MAGE_RELEASE = "pre-release"
+  }
   Write-Host "mage-runner version: $env:MAGE_RUNNER_VERSION"
 
   nuget sources Add `
@@ -53,18 +56,31 @@ if ($deployYamlsFound.Count -gt 0) {
     -UserName "github-runner" `
     -Password $env:AZ_DEVOPS_PAT
 
-  ie nuget install mage-runner `
-    -Source octopus `
-    -OutputDirectory mage `
-    -Version $env:MAGE_RUNNER_VERSION
+  $S3Bucket = $env:MAGE_S3_BUCKET
+  $MageRelease = $env:MAGE_RELEASE
+  $S3Key = "$MageRelease/mage-runner/mage-runner.$env:MAGE_RUNNER_VERSION.zip"
+  $ZipFilePath = "./mage/mage.zip"
 
-  Move-Item -Path ./mage/*/mage -Destination ./mage/
-  chmod +x ./mage/mage
+  Write-Host "Fetching $S3Key from s3://$S3Bucket/"
+  aws s3 cp "s3://$S3Bucket/$S3Key" $ZipFilePath --force
+
+  if ($LASTEXITCODE -ne 0) {
+    Write-Error "Failed to fetch $S3Key from S3. AWS CLI returned exit code $LASTEXITCODE."
+    exit $LASTEXITCODE
+  }
+
+  if (Test-Path -Path $ZipFilePath) {
+    Write-Host "Successfully fetched $ZipFilePath. Extracting..."
+    Expand-Archive -Path $ZipFilePath -DestinationPath "./mage" -Force
+    chmod +x ./mage/mage
+  } else {
+    Write-Error "Failed to fetch $S3Key from S3."
+  }
 
   $deployYamlsFound | ForEach-Object -Parallel {
     ins "./mage/mage octopus:octoPush $($_.FullName)" -ErrorOnFailure
   }
 }
 else {
-  throw "::error::No Deploy files (.yaml|.yml) files found in .variant folder"
+  throw "::error::No Deploy files (.yaml|.yml) files found in $env:DEPLOY_YAML_DIR"
 }
