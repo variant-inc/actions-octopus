@@ -30,6 +30,12 @@ if ($deployYamlsFound.Count -gt 0) {
   Set-Location "/tmp/$env:GITHUB_REPOSITORY"
   $env:TMP_PATH = "/tmp"
 
+  nuget sources Add `
+    -Name octopus `
+    -Source https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json `
+    -UserName "github-runner" `
+    -Password $env:AZ_DEVOPS_PAT
+
   $deployYamlsFound | ForEach-Object -Parallel {
     ins "$using:MagePath octopus:octoPush $($_.FullName)" -ErrorOnFailure
   }
