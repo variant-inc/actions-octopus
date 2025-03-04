@@ -100,6 +100,9 @@ runs:
         }
         Write-Host "terraform-variant-apps version: $env:TF_APPS_VERSION"
         "TF_APPS_VERSION=$env:TF_APPS_VERSION" | Out-File -FilePath $env:GITHUB_ENV -Append
+      env:
+        MAGE_RUNNER_VERSION: ${{ inputs.mage_runner_version }}
+        TF_APPS_VERSION: ${{ inputs.tf_apps_version }}
 
     - name: Cache mage
       id: cache-mage
