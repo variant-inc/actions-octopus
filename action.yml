@@ -90,15 +90,12 @@ runs:
         dotnet nuget add source --name octopus --username "optional" --password $env:AZ_DEVOPS_PAT --store-password-in-clear-text "https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json"
         dotnet nuget update source octopus -u "optional" -p $env:AZ_DEVOPS_PAT --store-password-in-clear-text -s "https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json"
 
-        Write-Host "1 ${LASTEXITCODE}"
-
         New-Item -ItemType File -Path ./.config/dotnet-tools.json -Force | Out-Null
-        Write-Host "2 ${LASTEXITCODE}"
         Copy-Item $env:GITHUB_ACTION_PATH/.config/dotnet-tools.json ./.config/dotnet-tools.json -Force | Out-Null
-        Write-Host "3 ${LASTEXITCODE}"
 
         if ([regex]::match($env:MAGE_RUNNER_VERSION, '[\[\]()]').Success) {
           $message = $(& dotnet tool install --version "${env:MAGE_RUNNER_VERSION}" --no-cache mage-runner ) 2>&1
+          Write-Host "message ${message} ${LASTEXITCODE}"
           $env:MAGE_RUNNER_VERSION = [regex]::match($message, '\d+\.\d+\.\d+').Groups[0].Value
         }
         Write-Host "4 ${LASTEXITCODE}"
