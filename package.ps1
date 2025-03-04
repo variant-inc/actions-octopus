@@ -9,8 +9,6 @@ Trap {
   Write-Error $_
 }
 
-Write-Host "mage-runner version: $env:MAGE_RUNNER_VERSION"
-
 $S3Bucket = $env:MAGE_S3_BUCKET
 $MageRelease = $env:MAGE_RELEASE
 $S3Key = "$MageRelease/mage-runner/mage-runner.$env:MAGE_RUNNER_VERSION.zip"

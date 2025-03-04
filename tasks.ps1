@@ -30,14 +30,9 @@ if ($deployYamlsFound.Count -gt 0) {
   Set-Location "/tmp/$env:GITHUB_REPOSITORY"
   $env:TMP_PATH = "/tmp"
 
-  Write-Host "terraform-variant-apps version: $env:TF_APPS_VERSION"
-
-  Get-Command ins -ErrorAction SilentlyContinue
-  Get-Alias ins -ErrorAction SilentlyContinue
-  Get-Command -Module Native
   $deployYamlsFound | ForEach-Object -Parallel {
-    ins "$MagePath octopus:octoPush $($_.FullName)" -ErrorOnFailure
-  }
+    ins "$using:MagePath octopus:octoPush $($_.FullName)" -ErrorOnFailure
+  } -ArgumentList $MagePath
 }
 else {
   throw "::error::No Deploy files (.yaml|.yml) files found in $env:DEPLOY_YAML_DIR"
