@@ -84,14 +84,54 @@ runs:
         role-to-assume: arn:aws:iam::064859874041:role/ops-github-runner
         aws-region: us-east-2
 
+    - name: Set package version
+      shell: pwsh
+      run: |
+        dotnet nuget add source --name octopus --username "optional" --password $env:AZ_DEVOPS_PAT --store-password-in-clear-text "https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json"
+        dotnet nuget update source octopus -u "optional" -p $env:AZ_DEVOPS_PAT --store-password-in-clear-text -s "https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json"
+
+        New-Item -ItemType File -Path ./.config/dotnet-tools.json -Force | Out-Null
+        Copy-Item $env:GITHUB_ACTION_PATH/.config/dotnet-tools.json ./.config/dotnet-tools.json -Force | Out-Null
+
+        if ([regex]::match($env:MAGE_RUNNER_VERSION, '[\[\]()]').Success) {
+          $message = $(& dotnet tool install --version "${env:MAGE_RUNNER_VERSION}" --no-cache mage-runner ) 2>&1 || $true
+          $env:MAGE_RUNNER_VERSION = [regex]::match($message, '\d+\.\d+\.\d+').Groups[0].Value
+        }
+        Write-Host "mage-runner version: $env:MAGE_RUNNER_VERSION"
+        "MAGE_RUNNER_VERSION=$env:MAGE_RUNNER_VERSION" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+        if ([regex]::match($env:TF_APPS_VERSION, '[\[\]()]').Success) {
+          $message = $(& dotnet tool install --version $env:TF_APPS_VERSION --no-cache terraform-variant-apps ) 2>&1 || $true
+          $env:TF_APPS_VERSION = [regex]::match($message, '\d+\.\d+\.\d+').Groups[0].Value
+        }
+        Write-Host "terraform-variant-apps version: $env:TF_APPS_VERSION"
+        "TF_APPS_VERSION=$env:TF_APPS_VERSION" | Out-File -FilePath $env:GITHUB_ENV -Append
+      continue-on-error: true
+      env:
+        MAGE_RUNNER_VERSION: ${{ inputs.mage_runner_version }}
+        TF_APPS_VERSION: ${{ inputs.tf_apps_version }}
+
+    - name: Cache mage
+      id: cache-mage
+      uses: actions/cache@v4
+      with:
+        path: cache/mage/mage
+        key: mage-runner.${{ env.MAGE_RUNNER_VERSION }}
+
+    - name: Download mage
+      if: steps.cache-mage.outputs.cache-hit != 'true'
+      id: mage
+      shell: pwsh
+      run: ${{ github.action_path }}/package.ps1
+
     - name: Setup Octopus Project & Release
       shell: pwsh
       run: ${{ github.action_path }}/tasks.ps1
       env:
-        TF_APPS_VERSION: ${{ inputs.tf_apps_version }}
-        MAGE_RUNNER_VERSION: ${{ inputs.mage_runner_version }}
+        MAGE_PATH: cache/mage/mage
         OCTOPUS_CLI_API_KEY: ${{ env.OCTOPUS_CLI_API_KEY }}
         OCTOPUS_CLI_SERVER: ${{ env.OCTOPUS_CLI_SERVER }}
         DEPLOY_YAML_DIR: ${{ inputs.deploy_yaml_dir }}
+
     - name: Create Release Action
       uses: variant-inc/actions-collection/create-release-tag@v2
