@@ -32,7 +32,7 @@ if ($deployYamlsFound.Count -gt 0) {
 
   $deployYamlsFound | ForEach-Object -Parallel {
     ins "$using:MagePath octopus:octoPush $($_.FullName)" -ErrorOnFailure
-  } -ArgumentList MagePath=${MagePath}
+  }
 }
 else {
   throw "::error::No Deploy files (.yaml|.yml) files found in $env:DEPLOY_YAML_DIR"
