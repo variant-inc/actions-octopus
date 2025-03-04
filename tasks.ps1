@@ -14,7 +14,7 @@ Install-Module Native
 Import-Module Native
 
 $DeployYamlDir = [System.IO.Path]::GetFullPath($env:DEPLOY_YAML_DIR)
-$MagePath = $env:MAGE_PATH
+$MagePath = [System.IO.Path]::GetFullPath($env:MAGE_PATH)
 
 if ((Test-Path -Path $DeployYamlDir) -eq $true) {
   $deployYamlsFound = Get-ChildItem `
@@ -32,8 +32,11 @@ if ($deployYamlsFound.Count -gt 0) {
 
   Write-Host "terraform-variant-apps version: $env:TF_APPS_VERSION"
 
+  Get-Command ins -ErrorAction SilentlyContinue
+  Get-Alias ins -ErrorAction SilentlyContinue
+  Get-Command -Module Native
   $deployYamlsFound | ForEach-Object -Parallel {
-    ins "& $MagePath octopus:octoPush $($_.FullName)" -ErrorOnFailure
+    ins "$MagePath octopus:octoPush $($_.FullName)" -ErrorOnFailure
   }
 }
 else {
