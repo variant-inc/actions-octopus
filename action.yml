@@ -128,7 +128,7 @@ runs:
       shell: pwsh
       run: ${{ github.action_path }}/tasks.ps1
       env:
-        MAGE_PATH: ${{ steps.mage.outputs.cache_path }}
+        MAGE_PATH: cache/mage/mage
         OCTOPUS_CLI_API_KEY: ${{ env.OCTOPUS_CLI_API_KEY }}
         OCTOPUS_CLI_SERVER: ${{ env.OCTOPUS_CLI_SERVER }}
         DEPLOY_YAML_DIR: ${{ inputs.deploy_yaml_dir }}
