@@ -30,12 +30,6 @@ if ($deployYamlsFound.Count -gt 0) {
   Set-Location "/tmp/$env:GITHUB_REPOSITORY"
   $env:TMP_PATH = "/tmp"
 
-  dotnet nuget add source --name octopus --username "optional" --password $env:AZ_DEVOPS_PAT --store-password-in-clear-text "https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json"
-  dotnet nuget update source octopus -u "optional" -p $env:AZ_DEVOPS_PAT --store-password-in-clear-text -s "https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json"
-
-  New-Item -ItemType File -Path ./.config/dotnet-tools.json -Force | Out-Null
-  Copy-Item $env:GITHUB_ACTION_PATH/.config/dotnet-tools.json ./.config/dotnet-tools.json -Force | Out-Null
-
   Write-Host "terraform-variant-apps version: $env:TF_APPS_VERSION"
 
   $deployYamlsFound | ForEach-Object -Parallel {
