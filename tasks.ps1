@@ -33,7 +33,7 @@ if ($deployYamlsFound.Count -gt 0) {
   Write-Host "terraform-variant-apps version: $env:TF_APPS_VERSION"
 
   $deployYamlsFound | ForEach-Object -Parallel {
-    ins "$MagePath octopus:octoPush $($_.FullName)" -ErrorOnFailure
+    ins "& $MagePath octopus:octoPush $($_.FullName)" -ErrorOnFailure
   }
 }
 else {
