@@ -84,12 +84,27 @@ runs:
         role-to-assume: arn:aws:iam::064859874041:role/ops-github-runner
         aws-region: us-east-2
 
+    - name: Cache mage
+      id: cache-mage
+      uses: actions/cache@v4
+      with:
+        path: cache/mage/mage
+        key: mage-runner.${{ env.MAGE_RUNNER_VERSION }}
+
+    - name: Download mage
+      if: steps.cache-mage.outputs.cache-hit != 'true'
+      id: mage
+      shell: pwsh
+      run: ${{ github.action_path }}/package.ps1
+      env:
+        MAGE_RUNNER_VERSION: ${{ inputs.mage_runner_version }}
+
     - name: Setup Octopus Project & Release
       shell: pwsh
       run: ${{ github.action_path }}/tasks.ps1
       env:
         TF_APPS_VERSION: ${{ inputs.tf_apps_version }}
-        MAGE_RUNNER_VERSION: ${{ inputs.mage_runner_version }}
+        MAGE_PATH: ${{ steps.mage.outputs.cache_path }}
         OCTOPUS_CLI_API_KEY: ${{ env.OCTOPUS_CLI_API_KEY }}
         OCTOPUS_CLI_SERVER: ${{ env.OCTOPUS_CLI_SERVER }}
         DEPLOY_YAML_DIR: ${{ inputs.deploy_yaml_dir }}
