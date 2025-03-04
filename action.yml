@@ -94,24 +94,18 @@ runs:
         Copy-Item $env:GITHUB_ACTION_PATH/.config/dotnet-tools.json ./.config/dotnet-tools.json -Force | Out-Null
 
         if ([regex]::match($env:MAGE_RUNNER_VERSION, '[\[\]()]').Success) {
-          $message = $(& dotnet tool install --version "${env:MAGE_RUNNER_VERSION}" --no-cache mage-runner ) 2>&1
-          Write-Host "message ${message} ${LASTEXITCODE}"
+          $message = $(& dotnet tool install --version "${env:MAGE_RUNNER_VERSION}" --no-cache mage-runner ) 2>&1 || $true
           $env:MAGE_RUNNER_VERSION = [regex]::match($message, '\d+\.\d+\.\d+').Groups[0].Value
         }
-        Write-Host "4 ${LASTEXITCODE}"
         Write-Host "mage-runner version: $env:MAGE_RUNNER_VERSION"
         "MAGE_RUNNER_VERSION=$env:MAGE_RUNNER_VERSION" | Out-File -FilePath $env:GITHUB_ENV -Append
 
-        Write-Host "5 ${LASTEXITCODE}"
-
         if ([regex]::match($env:TF_APPS_VERSION, '[\[\]()]').Success) {
-          $message = $(& dotnet tool install --version $env:TF_APPS_VERSION --no-cache terraform-variant-apps ) 2>&1
+          $message = $(& dotnet tool install --version $env:TF_APPS_VERSION --no-cache terraform-variant-apps ) 2>&1 || $true
           $env:TF_APPS_VERSION = [regex]::match($message, '\d+\.\d+\.\d+').Groups[0].Value
         }
-        Write-Host "6 ${LASTEXITCODE}"
         Write-Host "terraform-variant-apps version: $env:TF_APPS_VERSION"
         "TF_APPS_VERSION=$env:TF_APPS_VERSION" | Out-File -FilePath $env:GITHUB_ENV -Append
-        Write-Host "7 ${LASTEXITCODE}"
       continue-on-error: true
       env:
         MAGE_RUNNER_VERSION: ${{ inputs.mage_runner_version }}
