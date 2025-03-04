@@ -9,11 +9,6 @@ Trap {
   Write-Error $_
 }
 
-if ([regex]::match($env:MAGE_RUNNER_VERSION, '[\[\]()]').Success) {
-    $message = $(& dotnet tool install --version "${env:MAGE_RUNNER_VERSION}" --no-cache mage-runner ) 2>&1
-    $env:MAGE_RUNNER_VERSION = [regex]::match($message, '\d+\.\d+\.\d+').Groups[0].Value
-}
-
 Write-Host "mage-runner version: $env:MAGE_RUNNER_VERSION"
 
 $S3Bucket = $env:MAGE_S3_BUCKET
