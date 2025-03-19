@@ -39,6 +39,9 @@ if ($deployYamlsFound.Count -gt 0) {
     $message = $(& dotnet tool install --version $env:TF_APPS_VERSION --no-cache terraform-variant-apps ) 2>&1
     $env:TF_APPS_VERSION = [regex]::match($message, '\d+\.\d+\.\d+').Groups[0].Value
   }
+  else{
+    $env:TF_APPS_RELEASE = "pre-release"
+  }
   Write-Host "terraform-variant-apps version: $env:TF_APPS_VERSION"
 
   if ([regex]::match($env:MAGE_RUNNER_VERSION, '[\[\]()]').Success) {
