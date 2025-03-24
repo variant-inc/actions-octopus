@@ -44,8 +44,8 @@ infrastructure can migrate to v3.
 
 | parameter | description | required | default |
 | --- | --- | --- | --- |
-| tf_apps_version | terraform-variant-apps package version Defaults to latest release version. Can be overriden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).  | `false` | [*,3.14) |
-| mage_runner_version | mage-runner package version Defaults to latest release version. Can be overriden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).  | `false` | [*,1.6) |
+| tf_apps_version | terraform-variant-apps package version Defaults to latest release version. Can be overriden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).  | `false` | [*,3.15) |
+| mage_runner_version | mage-runner package version Defaults to latest release version. Can be overriden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).  | `false` | [*,1.7) |
 | deploy_yaml_dir | Defaults to `.variant/deploy` for backwards compatibility. This is the place where the YAML files for DX are located.  | `false` | .variant/deploy |
 <!-- action-docs-inputs -->
 <!-- markdownlint-enable line-length -->
