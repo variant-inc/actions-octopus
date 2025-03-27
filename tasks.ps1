@@ -50,12 +50,6 @@ if ($deployYamlsFound.Count -gt 0) {
   }
   Write-Host "mage-runner version: $env:MAGE_RUNNER_VERSION"
 
-  nuget sources Add `
-    -Name octopus `
-    -Source https://pkgs.dev.azure.com/USXpress-Inc/CloudOps/_packaging/Octopus/nuget/v3/index.json `
-    -UserName "github-runner" `
-    -Password $env:AZ_DEVOPS_PAT
-
   $S3Bucket = $env:MAGE_S3_BUCKET
   $MageRelease = $env:MAGE_RELEASE
   $S3Key = "$MageRelease/mage-runner/mage-runner.$env:MAGE_RUNNER_VERSION.zip"
