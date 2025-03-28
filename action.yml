@@ -78,12 +78,6 @@ runs:
         fi
         echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        role-to-assume: arn:aws:iam::064859874041:role/ops-github-runner
-        aws-region: us-east-2
-
     - name: Setup Octopus Project & Release
       shell: pwsh
       run: ${{ github.action_path }}/tasks.ps1
