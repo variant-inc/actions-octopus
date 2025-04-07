@@ -40,13 +40,13 @@ inputs:
       terraform-variant-apps package version
       Defaults to latest release version. Can be overriden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).
     required: false
-    default: '[*,3.15)'
+    default: <3.16
   mage_runner_version:
     description: |
       mage-runner package version
       Defaults to latest release version. Can be overriden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).
     required: false
-    default: '[*,1.7)'
+    default: <1.8
   deploy_yaml_dir:
     description: |
       Defaults to `.variant/deploy` for backwards compatibility.
@@ -56,20 +56,6 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Setup dotnet
-      uses: actions/setup-dotnet@v4
-    - name: install_mono
-      shell: bash
-      run: |
-        sudo apt install ca-certificates gnupg
-        sudo gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-        echo "deb [signed-by=/usr/share/keyrings/mono-official-archive-keyring.gpg] https://download.mono-project.com/repo/ubuntu stable-focal main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
-        sudo apt update
-
-        sudo apt install mono-complete
-
-    - name: install_nuget
-      uses: nuget/setup-nuget@v2
     - name: Set Default Branch
       shell: bash
       run: |
@@ -78,20 +64,46 @@ runs:
         fi
         echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v4
+    - name: Download GoCli
+      uses: variant-inc/go-version-select@v0.1
+
+    - name: Get package versions
+      id: package-version
+      shell: bash
+      run: ${{ github.action_path }}/version.sh
+      env:
+        MAGE_RUNNER_CONSTRAINT: ${{ inputs.mage_runner_version }}
+        TF_APPS_CONSTRAINT: ${{ inputs.tf_apps_version }}
+
+    - name: Set Mage Directory Path
+      shell: bash
+      run: |
+        echo "MAGE_DIR_PATH=cache/mage" >> $GITHUB_ENV
+
+    - name: Cache mage
+      id: cache-mage
+      uses: actions/cache@v4
       with:
-        role-to-assume: arn:aws:iam::064859874041:role/ops-github-runner
-        aws-region: us-east-2
+        path: ${{ env.MAGE_DIR_PATH }}/mage
+        key: mage-runner.${{ steps.package-version.outputs.mage-runner-version }}
+
+    - name: Download mage
+      if: steps.cache-mage.outputs.cache-hit != 'true'
+      id: mage
+      shell: bash
+      run: ${{ github.action_path }}/package.sh
+      env:
+        MAGE_RUNNER_VERSION: ${{ steps.package-version.outputs.mage-runner-version }}
 
     - name: Setup Octopus Project & Release
       shell: pwsh
       run: ${{ github.action_path }}/tasks.ps1
       env:
-        TF_APPS_VERSION: ${{ inputs.tf_apps_version }}
-        MAGE_RUNNER_VERSION: ${{ inputs.mage_runner_version }}
+        MAGE_RUNNER_VERSION: ${{ steps.package-version.outputs.mage-runner-version }}
+        TF_APPS_VERSION: ${{ steps.package-version.outputs.tf-apps-version }}
         OCTOPUS_CLI_API_KEY: ${{ env.OCTOPUS_CLI_API_KEY }}
         OCTOPUS_CLI_SERVER: ${{ env.OCTOPUS_CLI_SERVER }}
         DEPLOY_YAML_DIR: ${{ inputs.deploy_yaml_dir }}
+
     - name: Create Release Action
       uses: variant-inc/actions-collection/create-release-tag@v2
