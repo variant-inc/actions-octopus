@@ -19,6 +19,7 @@ DX Workflow defines and deploys both infrastructure and applications.
   for more information.
 
 2. Add a build step to your GitHub actions workflow yaml. More examples
+<!-- markdownlint-disable-next-line MD059 -->
   [here](https://backstage.apps.ops-drivevariant.com/docs/default/Component/dx-docs/Getting-Started/Github/Github-Actions/#examples-of-github-actions-that-the-dx-workflow-supports).
 
 ```yaml
