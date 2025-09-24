@@ -40,13 +40,13 @@ inputs:
       terraform-variant-apps package version
       Defaults to latest release version. Can be overriden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).
     required: false
-    default: <3.18
+    default: <3.19
   mage_runner_version:
     description: |
       mage-runner package version
       Defaults to latest release version. Can be overriden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).
     required: false
-    default: <1.9
+    default: <1.10
   deploy_yaml_dir:
     description: |
       Defaults to `.variant/deploy` for backwards compatibility.
