@@ -67,7 +67,7 @@ runs:
     - name: Download GoCli
       uses: variant-inc/go-version-select@v0.1
       with:
-        go-cli-version: 0.1.12-renovate-all-minor-patch.1.92
+        go-cli-version: 0.1.13-renovate-all-minor-patch.1.95
 
     - name: Get package versions
       id: package-version
