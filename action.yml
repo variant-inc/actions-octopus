@@ -45,7 +45,7 @@ inputs:
       mage-runner package version
       Defaults to latest release version. Can be overridden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).
     required: false
-    default: <1.10
+    default: <1.11
   schemas_version:
     description: |
       dx-schemas version
@@ -129,6 +129,7 @@ runs:
         OCTOPUS_CLI_API_KEY: ${{ env.OCTOPUS_CLI_API_KEY }}
         OCTOPUS_CLI_SERVER: ${{ env.OCTOPUS_CLI_SERVER }}
         DEPLOY_YAML_DIR: ${{ inputs.deploy_yaml_dir }}
+        SCHEMA_BASE_PATH: ${{ github.workspace }}/${{ env.SCHEMA_BASE_PATH }}/schemas
 
     - name: Create Release Action
       uses: variant-inc/actions-collection/create-release-tag@v2
