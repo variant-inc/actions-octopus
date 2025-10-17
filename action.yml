@@ -85,6 +85,7 @@ runs:
       shell: bash
       run: |
         echo "MAGE_DIR_PATH=cache/mage" >> $GITHUB_ENV
+        echo "SCHEMA_BASE_PATH=cache/schemas" >> $GITHUB_ENV
 
     - name: Cache mage
       id: cache-mage
@@ -95,11 +96,28 @@ runs:
 
     - name: Download mage
       if: steps.cache-mage.outputs.cache-hit != 'true'
-      id: mage
+      shell: bash
+      run: |
+        ${{ github.action_path }}/package.sh
+        chmod +x "$MAGE_DIR_PATH"/mage
+      env:
+        UNZIP_PATH: ${{ env.MAGE_DIR_PATH }}
+        S3_KEY: mage-runner.${{ steps.package-version.outputs.mage-runner-version }}.zip
+
+    - name: Cache Schemas
+      id: cache-schemas
+      uses: actions/cache@v4
+      with:
+        path: ${{ env.SCHEMA_BASE_PATH }}
+        key: schemas.${{ steps.package-version.outputs.schemas-version }}
+
+    - name: Download schemas
+      if: steps.cache-schemas.outputs.cache-hit != 'true'
       shell: bash
       run: ${{ github.action_path }}/package.sh
       env:
-        MAGE_RUNNER_VERSION: ${{ steps.package-version.outputs.mage-runner-version }}
+        UNZIP_PATH: ${{ env.SCHEMA_BASE_PATH }}
+        S3_KEY: dx-schemas.${{ steps.package-version.outputs.schemas-version }}.zip
 
     - name: Setup Octopus Project & Release
       shell: pwsh
