@@ -102,7 +102,7 @@ runs:
         chmod +x "$MAGE_DIR_PATH"/mage
       env:
         UNZIP_PATH: ${{ env.MAGE_DIR_PATH }}
-        S3_KEY: mage-runner.${{ steps.package-version.outputs.mage-runner-version }}.zip
+        S3_KEY: mage-runner/mage-runner.${{ steps.package-version.outputs.mage-runner-version }}.zip
 
     - name: Cache Schemas
       id: cache-schemas
@@ -117,7 +117,7 @@ runs:
       run: ${{ github.action_path }}/package.sh
       env:
         UNZIP_PATH: ${{ env.SCHEMA_BASE_PATH }}
-        S3_KEY: dx-schemas.${{ steps.package-version.outputs.schemas-version }}.zip
+        S3_KEY: dx-schemas/dx-schemas.${{ steps.package-version.outputs.schemas-version }}.zip
 
     - name: Setup Octopus Project & Release
       shell: pwsh
