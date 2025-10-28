@@ -49,3 +49,6 @@ find_best_version "mage-runner" "$DX_PACKAGES_S3_BUCKET" "mage-runner" "$MAGE_RU
 
 # Fetch version for terraform-variant-apps
 find_best_version "tf-apps" "$DX_PACKAGES_S3_BUCKET" "terraform-variant-apps" "$TF_APPS_CONSTRAINT"
+
+# Fetch version for terraform-variant-apps
+find_best_version "schemas" "$DX_PACKAGES_S3_BUCKET" "dx-schemas" "$SCHEMAS_CONSTRAINT"

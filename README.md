@@ -9,18 +9,16 @@ Github Action to create release in Octopus.
 ## Usage
 
 Please reference
-[DX Workflow](https://backstage.apps.ops-drivevariant.com/docs/default/Component/dx-docs)
+[DX Workflow](https://dx.docs.usxpress.io)
 documentation as actions-octopus v3 should only be used in tandem with DX Workflow.
 DX Workflow defines and deploys both infrastructure and applications.
 
 1. Create a deployment spec in `.variant/deploy`. Reference the
-  [DX Workflow Documentation](https://backstage.apps.ops-drivevariant.com/docs/default/Component/dx-docs/Getting-Started/Tutorials/)
-  and these [examples](https://backstage.apps.ops-drivevariant.com/docs/default/Component/dx-docs/dx-requirements/#more-examples)
+  [DX Workflow Documentation](https://dx.docs.usxpress.io/buildci/tutorials/)
   for more information.
 
-2. Add a build step to your GitHub actions workflow yaml. More examples
-<!-- markdownlint-disable-next-line MD059 -->
-  [here](https://backstage.apps.ops-drivevariant.com/docs/default/Component/dx-docs/Getting-Started/Github/Github-Actions/#examples-of-github-actions-that-the-dx-workflow-supports).
+2. Add a build step to your GitHub actions workflow yaml.
+  [More examples](https://dx.docs.usxpress.io/buildci/github_actions/#examples-of-github-actions-that-the-dx-workflow-supports).
 
 ```yaml
 - name: Lazy Action Octopus
@@ -45,8 +43,9 @@ infrastructure can migrate to v3.
 
 | parameter | description | required | default |
 | --- | --- | --- | --- |
-| tf_apps_version | terraform-variant-apps package version Defaults to latest release version. Can be overriden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).  | `false` | [*,3.15) |
-| mage_runner_version | mage-runner package version Defaults to latest release version. Can be overriden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).  | `false` | [*,1.7) |
+| tf_apps_version | terraform-variant-apps package version Defaults to latest release version. Can be overridden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).  | `false` | <3.19 |
+| mage_runner_version | mage-runner package version Defaults to latest release version. Can be overridden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).  | `false` | <1.10 |
+| schemas_version | dx-schemas version Defaults to latest release version. Can be overridden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).  | `false` | <1.0 |
 | deploy_yaml_dir | Defaults to `.variant/deploy` for backwards compatibility. This is the place where the YAML files for DX are located.  | `false` | .variant/deploy |
 <!-- action-docs-inputs -->
 <!-- markdownlint-enable line-length -->
