@@ -18,5 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: variant-inc/actions-setup@v2
+        env:
+          EXTRA_PROTECTED_BRANCH_REGEX: ^(archive/)
       - name: Create Release Action
         uses: variant-inc/actions-collection/create-release-tag@v2
