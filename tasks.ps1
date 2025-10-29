@@ -9,9 +9,9 @@ Trap {
   Write-Error $_
 }
 
-Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
-Install-Module Native
-Import-Module Native
+# Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
+# Install-Module Native
+# Import-Module Native
 
 $DeployYamlDir = [System.IO.Path]::GetFullPath($env:DEPLOY_YAML_DIR)
 $MageDir = [System.IO.Path]::GetFullPath($env:MAGE_DIR_PATH)
@@ -31,7 +31,11 @@ if ($deployYamlsFound.Count -gt 0) {
   $env:TMP_PATH = "/tmp"
 
   $deployYamlsFound | ForEach-Object -Parallel {
-    ins "$using:MageDir/mage octopus:octoPush $($_.FullName)" -ErrorOnFailure
+    & "$using:MageDir/mage" octopus:octoPush $($_.FullName)
+    if ($LASTEXITCODE)
+    {
+      throw "Exception Occured"
+    }
   }
 }
 else {
