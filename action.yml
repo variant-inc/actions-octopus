@@ -51,7 +51,7 @@ inputs:
       dx-schemas version
       Defaults to latest release version. Can be overridden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).
     required: false
-    default: <1.0
+    default: <1.1
   deploy_yaml_dir:
     description: |
       Defaults to `.variant/deploy` for backwards compatibility.
