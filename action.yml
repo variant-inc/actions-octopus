@@ -70,7 +70,7 @@ runs:
         echo "$HOME/.local/bin" >> $GITHUB_PATH
 
     - name: Download GoCli
-      uses: variant-inc/go-version-select@v0.1
+      uses: variant-inc/go-version-select@renovate/all-minor-patch
 
     - name: Get package versions
       id: package-version
