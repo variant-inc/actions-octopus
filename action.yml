@@ -71,8 +71,8 @@ runs:
 
     - name: Download GoCli
       uses: variant-inc/go-version-select@renovate/all-minor-patch
-      env:
-        GO_CLI_VERSION: 0.1.18-renovate-all-minor-patch.1.106
+      with:
+        go-cli-version: 0.1.18-renovate-all-minor-patch.1.106
 
     - name: Get package versions
       id: package-version
