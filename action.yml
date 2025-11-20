@@ -39,13 +39,13 @@ inputs:
       terraform-variant-apps package version
       Defaults to latest release version. Can be overridden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).
     required: false
-    default: <3.19
+    default: <4.1
   mage_runner_version:
     description: |
       mage-runner package version
       Defaults to latest release version. Can be overridden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).
     required: false
-    default: <1.11
+    default: <2.1
   schemas_version:
     description: |
       dx-schemas version
