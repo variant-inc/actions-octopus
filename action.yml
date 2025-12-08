@@ -71,6 +71,8 @@ runs:
 
     - name: Download GoCli
       uses: variant-inc/go-version-select@v0.1
+      with:
+        go-cli-version: ${{ env.GO_CLI_VERSION }}
 
     - name: Get package versions
       id: package-version
