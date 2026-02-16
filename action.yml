@@ -71,6 +71,8 @@ runs:
 
     - name: Download GoCli
       uses: variant-inc/go-version-select@v0.1
+      with:
+        go-cli-version: 0.1.31-feature-CLOUD-2783-mastermind-package.1.140
 
     - name: Get package versions
       id: package-version
