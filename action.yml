@@ -39,19 +39,19 @@ inputs:
       terraform-variant-apps package version
       Defaults to latest release version. Can be overridden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).
     required: false
-    default: ~>5.0
+    default: ~>5.1.0
   mage_runner_version:
     description: |
       mage-runner package version
       Defaults to latest release version. Can be overridden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).
     required: false
-    default: <2.2
+    default: ~>2.2.0
   schemas_version:
     description: |
       dx-schemas version
       Defaults to latest release version. Can be overridden by exact version or specifying range in [NuGet notation](https://learn.microsoft.com/en-us/nuget/concepts/package-versioning).
     required: false
-    default: <1.1
+    default: ~>1.2.0
   deploy_yaml_dir:
     description: |
       Defaults to `.variant/deploy` for backwards compatibility.
@@ -127,7 +127,7 @@ runs:
         TF_APPS_VERSION: ${{ steps.package-version.outputs.tf-apps-version }}
         SCHEMAS_VERSION: ${{ steps.package-version.outputs.schemas-version }}
         OCTOPUS_CLI_API_KEY: ${{ env.OCTOPUS_CLI_API_KEY }}
-        OCTOPUS_CLI_SERVER: ${{ env.OCTOPUS_CLI_SERVER }}
+        OCTOPUS_CLI_SERVER: https://octopus.public.usxpress.io
         DEPLOY_YAML_DIR: ${{ inputs.deploy_yaml_dir }}
         SCHEMA_BASE_PATH: ${{ github.workspace }}/${{ env.SCHEMA_BASE_PATH }}/schemas
 
