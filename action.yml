@@ -132,4 +132,4 @@ runs:
         SCHEMA_BASE_PATH: ${{ github.workspace }}/${{ env.SCHEMA_BASE_PATH }}/schemas
 
     - name: Create Release Action
-      uses: variant-inc/actions-collection/create-release-tag@v2
+      uses: variant-inc/actions-collection/create-release-tag@renovate/major-github-actions-dependencies
