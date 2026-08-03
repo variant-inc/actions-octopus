@@ -12,7 +12,7 @@ get_version() {
 	# Get the latest 50 files ordered by LastModified in descending order
 	local files
 	files=$(aws s3api list-objects-v2 --bucket "$bucket_name" --prefix "$prefix" \
-		--query 'Contents | sort_by(@, &LastModified) | reverse(@)[:100].Key' --output json | jq -r '.[]' | tr '\n' ' ' | sed 's/ $//')
+		--query 'Contents | sort_by(@, &LastModified) | reverse(@)[:150].Key' --output json | jq -r '.[]' | tr '\n' ' ' | sed 's/ $//')
 
 	# Extract versions from filenames and create a comma-separated list
 	local prefix_basename
