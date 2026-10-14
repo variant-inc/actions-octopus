@@ -9,16 +9,15 @@ get_version() {
 	local prefix="$2"
 	local constraint="$3"
 
-	# Get the latest 50 files ordered by LastModified in descending order
-	local files
-	files=$(aws s3api list-objects-v2 --bucket "$bucket_name" --prefix "$prefix" \
-		--query 'Contents | sort_by(@, &LastModified) | reverse(@)[:1000].Key' --output json | jq -r '.[]' | tr '\n' ' ' | sed 's/ $//')
-
-	# Extract versions from filenames and create a comma-separated list
 	local prefix_basename
 	prefix_basename=$(basename "$prefix")
+	local key_prefix="$prefix/$prefix_basename."
+
+	# List all packages and keep only release versions (X.Y.Z), skipping renovate and feature/prerelease builds
 	local versions
-	versions=$(echo "$files" | sed 's|'"$prefix"'/'"$prefix_basename"'\.||g; s|\.zip||g' | tr -s ' ' ',')
+	versions=$(aws s3api list-objects-v2 --bucket "$bucket_name" --prefix "$key_prefix" \
+		--query 'Contents[].Key' --output json |
+		jq -r --arg p "$key_prefix" '[(. // [])[] | select(test("renovate"; "i") | not) | ltrimstr($p) | rtrimstr(".zip") | select(test("^[0-9]+\\.[0-9]+\\.[0-9]+$"))] | join(",")')
 
 	# Select the version based on the provided constraint
 	go-version-select --versions "$versions" --constraint "$constraint"
